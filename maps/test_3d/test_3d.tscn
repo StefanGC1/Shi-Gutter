@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://cqytpukbtl4ab"]
+
+[ext_resource type="PhysicsMaterial" uid="uid://d4h0ksnmx2nvb" path="res://materials/new_physics_material.tres" id="1_fykap"]
+[ext_resource type="PackedScene" uid="uid://dm4gf140yfr3q" path="res://actors/player/player_3d.tscn" id="2_7vyll"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7vyll"]
+
+[sub_resource type="Sky" id="Sky_7vyll"]
+
+[sub_resource type="Environment" id="Environment_1cfs2"]
+sky = SubResource("Sky_7vyll")
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_7vyll"]
+
+[sub_resource type="Compositor" id="Compositor_1cfs2"]
+
+[node name="Test3d" type="Node3D" unique_id=123028719]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1442555571]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0)
+physics_material_override = ExtResource("1_fykap")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1892340310]
+shape = SubResource("BoxShape3D_7vyll")
+debug_color = Color(0.70799756, 0.48780608, 0, 0.41960785)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="StaticBody3D" unique_id=954306958]
+transform = Transform3D(1, 0, 0, 0, 0.4, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Player3d" parent="." unique_id=779539189 instance=ExtResource("2_7vyll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1331837242]
+transform = Transform3D(1, 0, 0, 0, -0.5, 0.86602545, 0, -0.86602545, -0.5, 0, 13, -11)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1065433558]
+environment = SubResource("Environment_1cfs2")
+camera_attributes = SubResource("CameraAttributesPractical_7vyll")
+compositor = SubResource("Compositor_1cfs2")
