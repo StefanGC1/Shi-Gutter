@@ -1,19 +1,46 @@
-[gd_scene format=3 uid="uid://dm4gf140yfr3q"]
+[gd_scene load_steps=8 format=3 uid="uid://dm4gf140yfr3q"]
 
-[ext_resource type="Script" uid="uid://75tts3016usu" path="res://actors/player/player_3d.gd" id="1_8feaw"]
+[ext_resource type="Script" path="res://actors/player/player_3d.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/characters/kenney_animated_characters_retro/Skins/humanMaleA.png" id="2_skin"]
+[ext_resource type="PackedScene" path="res://assets/characters/kenney_animated_characters_retro/Model/characterMedium.fbx" id="3_model"]
+[ext_resource type="PackedScene" path="res://assets/characters/kenney_animated_characters_retro/Animations/idle.fbx" id="4_idle"]
+[ext_resource type="PackedScene" path="res://assets/characters/kenney_animated_characters_retro/Animations/run.fbx" id="5_run"]
+[ext_resource type="PackedScene" path="res://assets/characters/kenney_animated_characters_retro/Animations/jump.fbx" id="6_jump"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rqfr8"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.42
+height = 1.9
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_8feaw"]
+[node name="Player3D" type="CharacterBody3D"]
+floor_snap_length = 0.25
+floor_max_angle = 0.872665
+script = ExtResource("1_script")
+character_skin = ExtResource("2_skin")
 
-[node name="Player3d" type="CharacterBody3D" unique_id=779539189]
-script = ExtResource("1_8feaw")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.95, 0)
+shape = SubResource("CapsuleShape3D_player")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=809354326]
-shape = SubResource("CapsuleShape3D_rqfr8")
+[node name="Character" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1006500935]
-mesh = SubResource("CapsuleMesh_8feaw")
+[node name="Model" parent="Character" instance=ExtResource("3_model")]
+scale = Vector3(0.5, 0.5, 0.5)
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1714379070]
-transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0, 2, 3)
+[node name="AnimationSources" type="Node3D" parent="Character"]
+
+[node name="Idle" parent="Character/AnimationSources" instance=ExtResource("4_idle")]
+visible = false
+
+[node name="Run" parent="Character/AnimationSources" instance=ExtResource("5_run")]
+visible = false
+
+[node name="Jump" parent="Character/AnimationSources" instance=ExtResource("6_jump")]
+visible = false
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 1.68, 0.16)
+rotation = Vector3(0, 3.14159, 0)
+cull_mask = 1
+current = true
+fov = 72.0
+near = 0.05
