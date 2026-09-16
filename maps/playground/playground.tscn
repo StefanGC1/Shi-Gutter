@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://2tx620ixwbe5"]
 
 [ext_resource type="PackedScene" uid="uid://dm4gf140yfr3q" path="res://actors/player/player_3d.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://bi3e2vf3b1xjh" path="res://Scenes/Toilet.tscn" id="2_m67mg"]
+[ext_resource type="PackedScene" uid="uid://c5i67gfg0y8ud" path="res://actors/characters/PersonajVerde.glb" id="3_wlsna"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
 sky_top_color = Color(0.08, 0.2, 0.42, 1)
@@ -123,3 +125,12 @@ theme_override_font_sizes/font_size = 28
 text = "+"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Toilet" parent="." unique_id=955677674 instance=ExtResource("2_m67mg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4987965, 0.257137, 0)
+
+[node name="Toilet2" parent="." unique_id=1789378337 instance=ExtResource("2_m67mg")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -7.666133, 0.2584157, 3.343247)
+
+[node name="PersonajVerde" parent="." unique_id=1558232764 instance=ExtResource("3_wlsna")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6046526, 0.08276367, 3.5566325)
