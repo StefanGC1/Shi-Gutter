@@ -31,6 +31,40 @@ project/assembly_name="Shit Gutter"
 
 3d/physics_engine="Jolt Physics"
 
+[input]
+
+move_forward={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":87)]
+}
+move_back={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":83)]
+}
+move_left={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":65)]
+}
+move_right={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":68)]
+}
+jump={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":32)]
+}
+interact={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":69)]
+}
+
+[layer_names]
+
+3d_render/layer_1="World"
+3d_render/layer_2="Local character (external cameras)"
+3d_physics/layer_1="World"
+3d_physics/layer_3="Interactable"
+
 [rendering]
 
 rendering_device/driver.windows="d3d12"

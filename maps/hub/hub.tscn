@@ -1,0 +1,764 @@
+[gd_scene format=3 uid="uid://bt7lhr4fcpoys"]
+
+[ext_resource type="PackedScene" uid="uid://dm4gf140yfr3q" path="res://actors/player/player_3d.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://chuyjtsyvq3qs" path="res://systems/world_session.gd" id="2_session"]
+[ext_resource type="PackedScene" path="res://ui/session_ui.tscn" id="3_ui"]
+[ext_resource type="Script" uid="uid://chnj32rccfxm2" path="res://systems/interaction/interactable.gd" id="4_interactable"]
+[ext_resource type="PackedScene" uid="uid://bi3e2vf3b1xjh" path="res://Scenes/Toilet.tscn" id="5_toilet"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMaterial"]
+sky_top_color = Color(0.07, 0.18, 0.23, 1)
+sky_horizon_color = Color(0.7, 0.65, 0.46, 1)
+ground_bottom_color = Color(0.1, 0.16, 0.14, 1)
+ground_horizon_color = Color(0.56, 0.55, 0.4, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMaterial")
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.66, 0.75, 0.76, 1)
+ambient_light_energy = 0.65
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Grass"]
+albedo_color = Color(0.23, 0.29, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Asphalt"]
+albedo_color = Color(0.13, 0.18, 0.18, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Dark"]
+albedo_color = Color(0.055, 0.09, 0.085, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Gold"]
+albedo_color = Color(0.95, 0.67, 0.24, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Teal"]
+albedo_color = Color(0.09, 0.29, 0.28, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Cream"]
+albedo_color = Color(0.76, 0.72, 0.57, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Concrete"]
+albedo_color = Color(0.42, 0.45, 0.39, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Rust"]
+albedo_color = Color(0.55, 0.23, 0.14, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Glass"]
+albedo_color = Color(0.12, 0.24, 0.25, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Wood"]
+albedo_color = Color(0.37, 0.28, 0.18, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Light"]
+albedo_color = Color(1, 0.83, 0.48, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(1, 0.83, 0.48, 1)
+emission_energy_multiplier = 1.4
+
+[sub_resource type="StandardMaterial3D" id="White"]
+albedo_color = Color(0.87, 0.88, 0.74, 1)
+roughness = 0.85
+
+[sub_resource type="BoxShape3D" id="StationShape"]
+size = Vector3(0.9, 0.7, 0.24)
+
+[sub_resource type="BoxMesh" id="StationMesh"]
+material = SubResource("Dark")
+size = Vector3(0.9, 0.7, 0.24)
+
+[sub_resource type="StandardMaterial3D" id="Screen"]
+albedo_color = Color(0.16, 0.72, 0.5, 1)
+roughness = 0.85
+emission_enabled = true
+emission = Color(0.16, 0.72, 0.5, 1)
+emission_energy_multiplier = 1.4
+
+[node name="Hub" type="Node3D" unique_id=1841256916]
+script = ExtResource("2_session")
+is_hub = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=785079882]
+environment = SubResource("Environment")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1449517042]
+transform = Transform3D(0.8660254, 0.3345653, -0.3715724, 0, 0.7431448, 0.6691306, 0.5, -0.5794841, 0.6435823, 0, 0, 0)
+light_color = Color(1, 0.87, 0.65, 1)
+light_energy = 1.4
+shadow_enabled = true
+
+[node name="Geometry" type="Node3D" parent="." unique_id=977369053]
+
+[node name="Surroundings" type="CSGBox3D" parent="Geometry" unique_id=2015365513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 0)
+size = Vector3(160, 0.3, 160)
+material = SubResource("Grass")
+
+[node name="Courtyard" type="CSGBox3D" parent="Geometry" unique_id=1490876259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+use_collision = true
+size = Vector3(46, 0.3, 40)
+material = SubResource("Asphalt")
+
+[node name="Road" type="CSGBox3D" parent="Geometry" unique_id=1483879569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.006, 15.5)
+size = Vector3(45, 0.015, 6)
+material = SubResource("Dark")
+
+[node name="RoadDash0" type="CSGBox3D" parent="Geometry" unique_id=1742079254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash4" type="CSGBox3D" parent="Geometry" unique_id=372589530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash8" type="CSGBox3D" parent="Geometry" unique_id=423528634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash12" type="CSGBox3D" parent="Geometry" unique_id=1338325603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash16" type="CSGBox3D" parent="Geometry" unique_id=796822160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash20" type="CSGBox3D" parent="Geometry" unique_id=975166483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash24" type="CSGBox3D" parent="Geometry" unique_id=1573598717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash28" type="CSGBox3D" parent="Geometry" unique_id=100534597]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash32" type="CSGBox3D" parent="Geometry" unique_id=1676236814]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash36" type="CSGBox3D" parent="Geometry" unique_id=198717078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="RoadDash40" type="CSGBox3D" parent="Geometry" unique_id=1123634297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.02, 15.5)
+size = Vector3(1.9, 0.018, 0.12)
+material = SubResource("Gold")
+
+[node name="Boundary0" type="CSGBox3D" parent="Geometry" unique_id=1033776760]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0.9, 0)
+use_collision = true
+size = Vector3(0.25, 1.8, 40)
+material = SubResource("Teal")
+
+[node name="BoundaryCap0" type="CSGBox3D" parent="Geometry" unique_id=110023957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 1.85, 0)
+size = Vector3(0.32, 0.1, 40.07)
+material = SubResource("Cream")
+
+[node name="Boundary1" type="CSGBox3D" parent="Geometry" unique_id=1116062716]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0.9, 0)
+use_collision = true
+size = Vector3(0.25, 1.8, 40)
+material = SubResource("Teal")
+
+[node name="BoundaryCap1" type="CSGBox3D" parent="Geometry" unique_id=2046614456]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1.85, 0)
+size = Vector3(0.32, 0.1, 40.07)
+material = SubResource("Cream")
+
+[node name="Boundary2" type="CSGBox3D" parent="Geometry" unique_id=1843945156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -20)
+use_collision = true
+size = Vector3(46, 1.8, 0.25)
+material = SubResource("Teal")
+
+[node name="BoundaryCap2" type="CSGBox3D" parent="Geometry" unique_id=1243584284]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, -20)
+size = Vector3(46.07, 0.1, 0.32)
+material = SubResource("Cream")
+
+[node name="Boundary3" type="CSGBox3D" parent="Geometry" unique_id=387155660]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 20)
+use_collision = true
+size = Vector3(46, 1.8, 0.25)
+material = SubResource("Teal")
+
+[node name="BoundaryCap3" type="CSGBox3D" parent="Geometry" unique_id=1162631512]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 20)
+size = Vector3(46.07, 0.1, 0.32)
+material = SubResource("Cream")
+
+[node name="RestaurantFloor" type="CSGBox3D" parent="Geometry" unique_id=1023212869]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -12)
+use_collision = true
+size = Vector3(14, 0.04, 8)
+material = SubResource("Concrete")
+
+[node name="RestaurantBack" type="CSGBox3D" parent="Geometry" unique_id=1999273469]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -16)
+use_collision = true
+size = Vector3(14, 3.6, 0.3)
+material = SubResource("Cream")
+
+[node name="RestaurantLeft" type="CSGBox3D" parent="Geometry" unique_id=886134437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.8, -12)
+use_collision = true
+size = Vector3(0.3, 3.6, 8)
+material = SubResource("Cream")
+
+[node name="RestaurantRight" type="CSGBox3D" parent="Geometry" unique_id=2106367336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.8, -12)
+use_collision = true
+size = Vector3(0.3, 3.6, 8)
+material = SubResource("Cream")
+
+[node name="RestaurantRoof" type="CSGBox3D" parent="Geometry" unique_id=1575329915]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.85, -11.6)
+use_collision = true
+size = Vector3(15, 0.35, 9.2)
+material = SubResource("Teal")
+
+[node name="RestaurantFascia" type="CSGBox3D" parent="Geometry" unique_id=706232283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45, -7)
+use_collision = true
+size = Vector3(15, 0.65, 0.25)
+material = SubResource("Rust")
+
+[node name="RestaurantSign" type="Label3D" parent="Geometry" unique_id=431114478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45, -6.84)
+pixel_size = 0.0085
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "LA ULTIMA MASA"
+font_size = 86
+outline_size = 6
+
+[node name="WindowWallLeft" type="CSGBox3D" parent="Geometry" unique_id=2009172166]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 0.6, -8)
+use_collision = true
+size = Vector3(4.25, 1.2, 0.22)
+material = SubResource("Cream")
+
+[node name="WindowLeft" type="CSGBox3D" parent="Geometry" unique_id=1900071384]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 2, -8)
+use_collision = true
+size = Vector3(4.25, 1.6, 0.15)
+material = SubResource("Glass")
+
+[node name="WindowTrimLeft" type="CSGBox3D" parent="Geometry" unique_id=460493612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 2.87, -7.98)
+use_collision = true
+size = Vector3(4.5, 0.12, 0.23)
+material = SubResource("Rust")
+
+[node name="DoorPostLeft" type="CSGBox3D" parent="Geometry" unique_id=1795025593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1.8, -8)
+use_collision = true
+size = Vector3(0.22, 3.6, 0.28)
+material = SubResource("Teal")
+
+[node name="WindowWallRight" type="CSGBox3D" parent="Geometry" unique_id=1362469316]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7, 0.6, -8)
+use_collision = true
+size = Vector3(4.25, 1.2, 0.22)
+material = SubResource("Cream")
+
+[node name="WindowRight" type="CSGBox3D" parent="Geometry" unique_id=1999161550]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7, 2, -8)
+use_collision = true
+size = Vector3(4.25, 1.6, 0.15)
+material = SubResource("Glass")
+
+[node name="WindowTrimRight" type="CSGBox3D" parent="Geometry" unique_id=93497511]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7, 2.87, -7.98)
+use_collision = true
+size = Vector3(4.5, 0.12, 0.23)
+material = SubResource("Rust")
+
+[node name="DoorPostRight" type="CSGBox3D" parent="Geometry" unique_id=1344943816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.8, -8)
+use_collision = true
+size = Vector3(0.22, 3.6, 0.28)
+material = SubResource("Teal")
+
+[node name="Counter" type="CSGBox3D" parent="Geometry" unique_id=284011552]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56, -10.75)
+use_collision = true
+size = Vector3(11, 1.12, 0.85)
+material = SubResource("Teal")
+
+[node name="CounterTop" type="CSGBox3D" parent="Geometry" unique_id=1485065626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, -10.75)
+use_collision = true
+size = Vector3(11.3, 0.12, 1.05)
+material = SubResource("Cream")
+
+[node name="CounterStripe" type="CSGBox3D" parent="Geometry" unique_id=2140572770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, -10.3)
+size = Vector3(11, 0.08, 0.025)
+material = SubResource("Gold")
+
+[node name="MenuBoard" type="CSGBox3D" parent="Geometry" unique_id=538905165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, -15.78)
+size = Vector3(6, 1.5, 0.15)
+material = SubResource("Dark")
+
+[node name="MenuText" type="Label3D" parent="Geometry" unique_id=1904612101]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -15.68)
+pixel_size = 0.0065
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "MENIUL ZILEI
+MICI  /  FASOLE  /  CURAJ"
+font_size = 52
+outline_size = 6
+
+[node name="DinerTable0.5" type="CSGBox3D" parent="Geometry" unique_id=1284945379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0.78, -13.35)
+use_collision = true
+size = Vector3(2, 0.14, 1.2)
+material = SubResource("Wood")
+
+[node name="DinerTableLeg0.5" type="CSGBox3D" parent="Geometry" unique_id=1586626231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0.36, -13.35)
+use_collision = true
+size = Vector3(0.18, 0.72, 0.65)
+material = SubResource("Dark")
+
+[node name="DinerTable9.5" type="CSGBox3D" parent="Geometry" unique_id=1336688031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.78, -13.35)
+use_collision = true
+size = Vector3(2, 0.14, 1.2)
+material = SubResource("Wood")
+
+[node name="DinerTableLeg9.5" type="CSGBox3D" parent="Geometry" unique_id=810802302]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.36, -13.35)
+use_collision = true
+size = Vector3(0.18, 0.72, 0.65)
+material = SubResource("Dark")
+
+[node name="Stool0.5999999999999996" type="CSGBox3D" parent="Geometry" unique_id=713856800]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4, 0.3, -9.3)
+use_collision = true
+size = Vector3(0.45, 0.6, 0.45)
+material = SubResource("Rust")
+
+[node name="Stool2.4" type="CSGBox3D" parent="Geometry" unique_id=1776475637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 0.3, -9.3)
+use_collision = true
+size = Vector3(0.45, 0.6, 0.45)
+material = SubResource("Rust")
+
+[node name="Stool9.6" type="CSGBox3D" parent="Geometry" unique_id=409188906]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 0.3, -9.3)
+use_collision = true
+size = Vector3(0.45, 0.6, 0.45)
+material = SubResource("Rust")
+
+[node name="Stool11.4" type="CSGBox3D" parent="Geometry" unique_id=405908459]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4, 0.3, -9.3)
+use_collision = true
+size = Vector3(0.45, 0.6, 0.45)
+material = SubResource("Rust")
+
+[node name="PorchLight" type="CSGBox3D" parent="Geometry" unique_id=75563629]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.12, -7.75)
+size = Vector3(3, 0.06, 0.09)
+material = SubResource("Light")
+
+[node name="WalkMarker12" type="CSGBox3D" parent="Geometry" unique_id=856219767]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 6)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="WalkMarker10" type="CSGBox3D" parent="Geometry" unique_id=757567436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 4)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="WalkMarker8" type="CSGBox3D" parent="Geometry" unique_id=172701056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 2)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="WalkMarker6" type="CSGBox3D" parent="Geometry" unique_id=2000158883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 0)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="WalkMarker4" type="CSGBox3D" parent="Geometry" unique_id=1966314525]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, -2)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="WalkMarker2" type="CSGBox3D" parent="Geometry" unique_id=1677804179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, -4)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="WalkMarker0" type="CSGBox3D" parent="Geometry" unique_id=1398206605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, -6)
+size = Vector3(0.55, 0.018, 0.8)
+material = SubResource("Gold")
+
+[node name="Directions" type="Label3D" parent="Geometry" unique_id=147458239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.4, 4.025)
+pixel_size = 0.006
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "RESTAURANT
+MECI DE TEST  ↑"
+font_size = 50
+outline_size = 6
+
+[node name="DirectionPost" type="CSGBox3D" parent="Geometry" unique_id=1164353808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0.65, 3.950625)
+use_collision = true
+size = Vector3(0.1, 1.3, 0.08125)
+material = SubResource("Dark")
+
+[node name="DirectionBoard" type="CSGBox3D" parent="Geometry" unique_id=36409467]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.4, 3.96)
+use_collision = true
+size = Vector3(2.8, 1, 0.1)
+material = SubResource("Teal")
+
+[node name="PumpIsland" type="CSGBox3D" parent="Geometry" unique_id=1428031571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.13, 1)
+use_collision = true
+size = Vector3(8, 0.26, 9)
+material = SubResource("Concrete")
+
+[node name="Canopy" type="CSGBox3D" parent="Geometry" unique_id=645304392]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 4.3, 1)
+use_collision = true
+size = Vector3(9, 0.38, 10)
+material = SubResource("Teal")
+
+[node name="CanopyStripe" type="CSGBox3D" parent="Geometry" unique_id=562097970]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 4.22, 6.05)
+size = Vector3(9, 0.28, 0.08)
+material = SubResource("Gold")
+
+[node name="CanopySign" type="Label3D" parent="Geometry" unique_id=1688260059]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 4.32, 6.12)
+pixel_size = 0.007
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "ULTIMA OPRIRE"
+font_size = 60
+outline_size = 6
+
+[node name="CanopyPost0.3000000000000007_0" type="CSGBox3D" parent="Geometry" unique_id=32650414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7, 2.1, -3)
+use_collision = true
+size = Vector3(0.22, 4.2, 0.22)
+material = SubResource("Cream")
+
+[node name="CanopyPost0.3000000000000007_8" type="CSGBox3D" parent="Geometry" unique_id=699163611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7, 2.1, 5)
+use_collision = true
+size = Vector3(0.22, 4.2, 0.22)
+material = SubResource("Cream")
+
+[node name="CanopyPost7.699999999999999_0" type="CSGBox3D" parent="Geometry" unique_id=1171765051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.3, 2.1, -3)
+use_collision = true
+size = Vector3(0.22, 4.2, 0.22)
+material = SubResource("Cream")
+
+[node name="CanopyPost7.699999999999999_8" type="CSGBox3D" parent="Geometry" unique_id=604364989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.3, 2.1, 5)
+use_collision = true
+size = Vector3(0.22, 4.2, 0.22)
+material = SubResource("Cream")
+
+[node name="PumpBase0.5" type="CSGBox3D" parent="Geometry" unique_id=2090484721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.85, -1.5)
+use_collision = true
+size = Vector3(1, 1.2, 0.75)
+material = SubResource("Rust")
+
+[node name="PumpHead0.5" type="CSGBox3D" parent="Geometry" unique_id=1654092938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.8, -1.5)
+use_collision = true
+size = Vector3(1.18, 0.75, 0.8)
+material = SubResource("Cream")
+
+[node name="PumpScreen0.5" type="CSGBox3D" parent="Geometry" unique_id=666966080]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.85, -1.089)
+size = Vector3(0.75, 0.33, 0.035)
+material = SubResource("Dark")
+
+[node name="PumpPrice0.5" type="Label3D" parent="Geometry" unique_id=1683566649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.85, -1.065)
+pixel_size = 0.004
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "9.99"
+font_size = 48
+outline_size = 6
+
+[node name="PumpHose0.5" type="CSGBox3D" parent="Geometry" unique_id=121030071]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.68, 1.03, -1.5)
+use_collision = true
+size = Vector3(0.1, 1.3, 0.12)
+material = SubResource("Dark")
+
+[node name="PumpBase5.5" type="CSGBox3D" parent="Geometry" unique_id=324176961]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.85, 3.5)
+use_collision = true
+size = Vector3(1, 1.2, 0.75)
+material = SubResource("Rust")
+
+[node name="PumpHead5.5" type="CSGBox3D" parent="Geometry" unique_id=512145645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.8, 3.5)
+use_collision = true
+size = Vector3(1.18, 0.75, 0.8)
+material = SubResource("Cream")
+
+[node name="PumpScreen5.5" type="CSGBox3D" parent="Geometry" unique_id=360111412]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.85, 3.911)
+size = Vector3(0.75, 0.33, 0.035)
+material = SubResource("Dark")
+
+[node name="PumpPrice5.5" type="Label3D" parent="Geometry" unique_id=243211228]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.85, 3.935)
+pixel_size = 0.004
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "9.99"
+font_size = 48
+outline_size = 6
+
+[node name="PumpHose5.5" type="CSGBox3D" parent="Geometry" unique_id=22496343]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.68, 1.03, 3.5)
+use_collision = true
+size = Vector3(0.1, 1.3, 0.12)
+material = SubResource("Dark")
+
+[node name="ParkingLine8.5" type="CSGBox3D" parent="Geometry" unique_id=481993589]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 0.017, 6)
+size = Vector3(0.08, 0.02, 5)
+material = SubResource("White")
+
+[node name="ParkingLine12" type="CSGBox3D" parent="Geometry" unique_id=1576008574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.017, 6)
+size = Vector3(0.08, 0.02, 5)
+material = SubResource("White")
+
+[node name="ParkingLine15.5" type="CSGBox3D" parent="Geometry" unique_id=1758543612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 0.017, 6)
+size = Vector3(0.08, 0.02, 5)
+material = SubResource("White")
+
+[node name="ParkingLine19" type="CSGBox3D" parent="Geometry" unique_id=1981690591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0.017, 6)
+size = Vector3(0.08, 0.02, 5)
+material = SubResource("White")
+
+[node name="ParkingEnd" type="CSGBox3D" parent="Geometry" unique_id=514160007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7, 0.017, 3.5)
+size = Vector3(10.5, 0.02, 0.08)
+material = SubResource("White")
+
+[node name="ParkingSign" type="Label3D" parent="Geometry" unique_id=873224950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2.3, 1)
+pixel_size = 0.01
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "P"
+font_size = 110
+outline_size = 6
+
+[node name="ParkingSignBacking" type="CSGBox3D" parent="Geometry" unique_id=1868450900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2.3, 0.94)
+use_collision = true
+size = Vector3(1.4, 1.5, 0.09)
+material = SubResource("Teal")
+
+[node name="ParkingSignPost" type="CSGBox3D" parent="Geometry" unique_id=680683884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.05, 0.94)
+use_collision = true
+size = Vector3(0.12, 2.1, 0.12)
+material = SubResource("Dark")
+
+[node name="BathroomFloor" type="CSGBox3D" parent="Geometry" unique_id=302342904]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.02, -11)
+use_collision = true
+size = Vector3(6, 0.04, 7)
+material = SubResource("Concrete")
+
+[node name="BathroomBack" type="CSGBox3D" parent="Geometry" unique_id=595453917]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.6, -14.5)
+use_collision = true
+size = Vector3(6, 3.2, 0.25)
+material = SubResource("Cream")
+
+[node name="BathroomLeft" type="CSGBox3D" parent="Geometry" unique_id=1195277679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1.6, -11)
+use_collision = true
+size = Vector3(0.25, 3.2, 7)
+material = SubResource("Cream")
+
+[node name="BathroomRight" type="CSGBox3D" parent="Geometry" unique_id=1873407186]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.6, -11)
+use_collision = true
+size = Vector3(0.25, 3.2, 7)
+material = SubResource("Cream")
+
+[node name="BathroomDivider" type="CSGBox3D" parent="Geometry" unique_id=1615148210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.2, -12)
+use_collision = true
+size = Vector3(0.12, 2.4, 4.8)
+material = SubResource("Teal")
+
+[node name="BathroomRoof" type="CSGBox3D" parent="Geometry" unique_id=1867220359]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 3.35, -11)
+use_collision = true
+size = Vector3(6.7, 0.3, 7.7)
+material = SubResource("Rust")
+
+[node name="BathroomHeader" type="CSGBox3D" parent="Geometry" unique_id=448738076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2.9, -7.5)
+use_collision = true
+size = Vector3(6, 0.65, 0.22)
+material = SubResource("Teal")
+
+[node name="BathroomSign" type="Label3D" parent="Geometry" unique_id=653839004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2.9, -7.34)
+pixel_size = 0.008
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "TOALETE"
+font_size = 68
+outline_size = 6
+
+[node name="BathroomFrontLeft" type="CSGBox3D" parent="Geometry" unique_id=1745299192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.6, 1.15, -7.5)
+use_collision = true
+size = Vector3(1.2, 2.3, 0.25)
+material = SubResource("Cream")
+
+[node name="BathroomFrontRight" type="CSGBox3D" parent="Geometry" unique_id=450143822]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.4, 1.15, -7.5)
+use_collision = true
+size = Vector3(1.2, 2.3, 0.25)
+material = SubResource("Cream")
+
+[node name="Planter0" type="CSGBox3D" parent="Geometry" unique_id=618249727]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 0.3, -5)
+use_collision = true
+size = Vector3(2, 0.6, 2)
+material = SubResource("Cream")
+
+[node name="Shrub0" type="CSGBox3D" parent="Geometry" unique_id=1199384668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 1, -5)
+size = Vector3(1.6, 1.1, 1.6)
+material = SubResource("Grass")
+
+[node name="Planter38" type="CSGBox3D" parent="Geometry" unique_id=113632608]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0.3, -5)
+use_collision = true
+size = Vector3(2, 0.6, 2)
+material = SubResource("Cream")
+
+[node name="Shrub38" type="CSGBox3D" parent="Geometry" unique_id=180444777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 1, -5)
+size = Vector3(1.6, 1.1, 1.6)
+material = SubResource("Grass")
+
+[node name="PylonPost" type="CSGBox3D" parent="Geometry" unique_id=898195533]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 2.5, 9.971631)
+use_collision = true
+size = Vector3(0.3, 5, 0.24326172)
+material = SubResource("Dark")
+
+[node name="Pylon" type="CSGBox3D" parent="Geometry" unique_id=1574101884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 5.1, 10)
+use_collision = true
+size = Vector3(4.8, 2.6, 0.25)
+material = SubResource("Teal")
+
+[node name="PylonTitle" type="Label3D" parent="Geometry" unique_id=1461015642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 5.45, 10.15)
+pixel_size = 0.007
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "ULTIMA
+OPRIRE"
+font_size = 66
+outline_size = 6
+
+[node name="PylonKm" type="Label3D" parent="Geometry" unique_id=1234190889]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 4.48, 10.15)
+pixel_size = 0.0065
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "KM 13  /  NON-STOP"
+font_size = 35
+outline_size = 6
+
+[node name="MatchStation" type="StaticBody3D" parent="." unique_id=720526160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -10.18)
+collision_layer = 5
+script = ExtResource("4_interactable")
+prompt = "Deschide meniul de meci"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MatchStation" unique_id=1333838830]
+shape = SubResource("StationShape")
+
+[node name="Housing" type="MeshInstance3D" parent="MatchStation" unique_id=475623306]
+mesh = SubResource("StationMesh")
+
+[node name="Screen" type="CSGBox3D" parent="MatchStation" unique_id=1050121662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.13)
+size = Vector3(0.75, 0.55, 0.015)
+material = SubResource("Screen")
+
+[node name="ScreenText" type="Label3D" parent="MatchStation" unique_id=1472717751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.15)
+pixel_size = 0.0043
+modulate = Color(0.03, 0.1, 0.065, 1)
+text = "MECI
+[E]"
+font_size = 58
+outline_size = 6
+
+[node name="StationSign" type="Label3D" parent="MatchStation" unique_id=1282435698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73, 0)
+modulate = Color(0.96, 0.84, 0.6, 1)
+text = "COMANDA AICI"
+font_size = 40
+outline_size = 6
+
+[node name="ToiletLeft" parent="." unique_id=1635529454 instance=ExtResource("5_toilet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0.27, -12.8)
+
+[node name="ToiletRight" parent="." unique_id=1081485849 instance=ExtResource("5_toilet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5, 0.27, -12.8)
+
+[node name="Player3D" parent="." unique_id=1172597618 instance=ExtResource("1_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 9)
+
+[node name="SessionUI" parent="." unique_id=1140886595 instance=ExtResource("3_ui")]

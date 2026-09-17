@@ -1,7 +1,7 @@
 extends Control
 
 
-const SINGLEPLAYER_SCENE := "res://maps/playground/playground.tscn"
+const HUB_SCENE := "res://maps/hub/hub.tscn"
 
 
 func _ready() -> void:
@@ -10,7 +10,7 @@ func _ready() -> void:
 
 
 func _on_singleplayer_pressed() -> void:
-	get_tree().change_scene_to_file(SINGLEPLAYER_SCENE)
+	get_tree().change_scene_to_file(HUB_SCENE)
 
 
 func _on_multiplayer_pressed() -> void:
