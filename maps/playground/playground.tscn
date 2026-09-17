@@ -2,7 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://dm4gf140yfr3q" path="res://actors/player/player_3d.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://bi3e2vf3b1xjh" path="res://Scenes/Toilet.tscn" id="2_m67mg"]
-[ext_resource type="PackedScene" uid="uid://c5i67gfg0y8ud" path="res://actors/characters/PersonajVerde.glb" id="3_wlsna"]
+[ext_resource type="Script" path="res://systems/world_session.gd" id="3_session"]
+[ext_resource type="PackedScene" path="res://ui/session_ui.tscn" id="4_ui"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
 sky_top_color = Color(0.08, 0.2, 0.42, 1)
@@ -42,6 +43,7 @@ size = Vector3(3, 0.75, 3)
 size = Vector3(3, 0.75, 3)
 
 [node name="Playground" type="Node3D" unique_id=326821387]
+script = ExtResource("3_session")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321520628]
 environment = SubResource("Environment_main")
@@ -90,47 +92,10 @@ shape = SubResource("PlatformShape")
 [node name="Player3D" parent="." unique_id=1916999477 instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 3.5)
 
-[node name="Instructions" type="CanvasLayer" parent="." unique_id=988498698]
-
-[node name="Panel" type="PanelContainer" parent="Instructions" unique_id=1297182151]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 470.0
-offset_bottom = 92.0
-
-[node name="Label" type="Label" parent="Instructions/Panel" unique_id=1866904796]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "WASD / sageti - miscare    |    Mouse - privire
-SPACE - saritura    |    ESC - elibereaza cursorul"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Crosshair" type="Label" parent="Instructions" unique_id=267933693]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -12.0
-offset_top = -18.0
-offset_right = 12.0
-offset_bottom = 18.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 28
-text = "+"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="SessionUI" parent="." instance=ExtResource("4_ui")]
 
 [node name="Toilet" parent="." unique_id=955677674 instance=ExtResource("2_m67mg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4987965, 0.257137, 0)
 
 [node name="Toilet2" parent="." unique_id=1789378337 instance=ExtResource("2_m67mg")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -7.666133, 0.2584157, 3.343247)
-
-[node name="PersonajVerde" parent="." unique_id=1558232764 instance=ExtResource("3_wlsna")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6046526, 0.08276367, 3.5566325)
