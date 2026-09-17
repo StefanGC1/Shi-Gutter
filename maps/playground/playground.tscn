@@ -2,8 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://dm4gf140yfr3q" path="res://actors/player/player_3d.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://bi3e2vf3b1xjh" path="res://Scenes/Toilet.tscn" id="2_m67mg"]
-[ext_resource type="Script" path="res://systems/world_session.gd" id="3_session"]
+[ext_resource type="Script" uid="uid://chuyjtsyvq3qs" path="res://systems/world_session.gd" id="3_session"]
 [ext_resource type="PackedScene" path="res://ui/session_ui.tscn" id="4_ui"]
+[ext_resource type="PackedScene" uid="uid://bkf4csytcmukt" path="res://actors/characters/BunicAlbastru.glb" id="5_42lni"]
+[ext_resource type="PackedScene" uid="uid://blxke0ddtx85n" path="res://actors/characters/DoamnaMov.glb" id="6_ws22d"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
 sky_top_color = Color(0.08, 0.2, 0.42, 1)
@@ -92,10 +94,16 @@ shape = SubResource("PlatformShape")
 [node name="Player3D" parent="." unique_id=1916999477 instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 3.5)
 
-[node name="SessionUI" parent="." instance=ExtResource("4_ui")]
+[node name="SessionUI" parent="." unique_id=1404083086 instance=ExtResource("4_ui")]
 
 [node name="Toilet" parent="." unique_id=955677674 instance=ExtResource("2_m67mg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4987965, 0.257137, 0)
 
 [node name="Toilet2" parent="." unique_id=1789378337 instance=ExtResource("2_m67mg")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -7.666133, 0.2584157, 3.343247)
+
+[node name="BunicAlbastru" parent="." unique_id=1358098162 instance=ExtResource("5_42lni")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.637276, 0.082763195, 5.798258)
+
+[node name="DoamnaMov" parent="." unique_id=1142995261 instance=ExtResource("6_ws22d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.661705, 0.08276367, 7.6291194)
