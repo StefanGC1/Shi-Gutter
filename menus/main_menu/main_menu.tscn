@@ -91,7 +91,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(390, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
-text = "INTRĂ ÎN HUB"
+text = "SINGLEPLAYER"
 
 [node name="Multiplayer" type="Button" parent="Center/MenuPanel/Margin/VBox"]
 custom_minimum_size = Vector2(390, 72)

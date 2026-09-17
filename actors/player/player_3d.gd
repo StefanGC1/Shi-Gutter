@@ -40,8 +40,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			deg_to_rad(-85.0), deg_to_rad(85.0)
 		)
 	elif event.is_action_pressed("interact") and not event.is_echo():
-		interactor.try_interact(self)
+		# An interaction can immediately remove this player by changing scenes.
 		get_viewport().set_input_as_handled()
+		interactor.try_interact(self)
 	elif event is InputEventMouseButton and event.pressed:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -82,7 +83,7 @@ func _update_locomotion(walking: bool) -> void:
 		return
 	_walking = walking
 	if walking:
-		animation_player.play(&"MersCaracter1")
+		animation_player.play(&"locomotion/walk")
 	else:
 		# No idle/jump clip in this GLB yet. Use its neutral standing pose.
 		animation_player.stop()

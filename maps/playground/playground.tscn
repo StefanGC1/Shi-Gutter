@@ -92,6 +92,9 @@ shape = SubResource("PlatformShape")
 
 [node name="SessionUI" parent="." unique_id=1404083086 instance=ExtResource("4_ui")]
 
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+position = Vector3(0, 0.1, 5)
+
 [node name="Toilet" parent="." unique_id=955677674 instance=ExtResource("2_m67mg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4987965, 0.257137, 0)
 

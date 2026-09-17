@@ -1,14 +1,14 @@
 # Shit Gutter
 
 Prototip Godot 4.6 first-person. Fluxul curent este:
-**Meniu principal → hub de benzinărie → terminalul restaurantului → meci local de test → hub.**
+**Meniu principal → CharacterSelector → hub de benzinărie → terminalul restaurantului → meci local de test → hub.**
 
 ## Pornire
 
 1. Dezarhivează Godot 4.6 Standard pentru Windows x86_64. Nu este necesară varianta .NET.
 2. În Godot, apasă **Import** și selectează `project.godot`.
 3. Așteaptă importarea modelelor și texturilor.
-4. Apasă **F5**, apoi **Intră în hub**.
+4. Apasă **F5**, apoi **Singleplayer**, și alege un personaj pentru a intra în hub.
 5. Urmează marcajele galbene până la restaurantul **La Ultima Masă**.
 6. Privește terminalul verde de la tejghea, de la cel mult 2,8 metri, și apasă **E**.
 7. Alege **Pornește meci de test**. Ajungi în playground.
@@ -25,6 +25,7 @@ Pentru a rula o scenă individuală, deschide-o și apasă **F6**.
 | Privire | Mouse |
 | Săritură | Space |
 | Interacțiune cu obiectul privit | E |
+| Alege alt personaj (în timpul jocului); după alegere revii în hub | H |
 | Deschide/închide meniul, anulează interacțiunea | Escape |
 
 Meniurile eliberează cursorul și blochează mișcarea, săritura și mouse-look.
@@ -33,9 +34,16 @@ este readus la punctul de pornire.
 
 ## Personajul activ
 
-Jucătorul folosește exclusiv `actors/characters/PersonajVerde.glb`, cu materialele
-sale originale. Personajul alb Kenney și copia decorativă a personajului verde
-nu mai sunt instanțiate în playground.
+CharacterSelector oferă personajul verde, bunicul albastru și doamna mov.
+Alegerea este păstrată în `Data.SelectPlayer` pe durata sesiunii și folosită
+în hub și playground. Vitezele colegului sunt păstrate: verde 5, albastru 3,
+mov 10. Escape din selector revine la meniul principal.
+
+`systems/world_session.gd` creează un singur `new_player`, din scena personajului
+ales, la nodul `PlayerSpawn` din fiecare hartă. Transformarea este aplicată înainte
+de `_ready()`, astfel încât și respawn-ul folosește punctul corect. Pentru a muta
+locul de pornire, mută sau rotește `PlayerSpawn` în editor. Nu adăuga un player
+manual în hub sau playground: acesta ar dubla controllerul și camera.
 
 Modelul verde privește nativ spre +Z. În scena jucătorului este rotit cu 180°,
 astfel încât fața, camera și deplasarea înainte să fie aliniate pe -Z.
@@ -62,14 +70,21 @@ un jucător și butonul de confirmare. Multiplayer-ul este dezactivat explicit:
 **nu există încă server, coadă de matchmaking, lobby de rețea sau meci online**.
 Hub-ul este local în această etapă.
 
+Lângă punctul de pornire, în stânga, terminalul galben **SCHIMBĂ PERSONAJUL**
+deschide CharacterSelector cu E. Trebuie privit de aproape (maximum 2,8 m),
+la fel ca terminalul de meci. După alegere revii la spawn-ul hub-ului cu noul
+personaj. Tasta H rămâne disponibilă și în hub, și în playground.
+
 Escape deschide un meniu cu continuare, întoarcere în hub (din playground) și
 întoarcere la meniul principal.
 
 ## Integrare cu munca echipei
 
-- **Character selector:** punctul de integrare este `actors/player/player_3d.tscn`.
-  Controllerul folosește acum scheletul și animația de mers ale personajului verde.
-  Înlocuirea modelului cu alte rig-uri va necesita adaptarea referințelor din script.
+- **Character selector:** `Scenes/character_selection_screen.gd` setează
+  `Data.SelectPlayer` și deschide hub-ul. `systems/world_session.gd` instanțiază
+  scena aleasă din `actors/player/` și expune personajul activ prin `new_player`.
+  Referința veche `$Player3D` a fost eliminată din controllerul sesiunii.
+  H este disponibil în timpul jocului, nu în meniul de pauză sau al terminalului.
 - **Interacțiuni:** există o singură acțiune Input Map, `interact`, legată de E.
   `Interactor` este un RayCast3D atașat camerei; verifică raza de 2,8 m și primul
   obstacol. Pereții blochează interacțiunea.
@@ -87,10 +102,12 @@ Escape deschide un meniu cu continuare, întoarcere în hub (din playground) și
 ## Structură
 
 ```text
-actors/characters/    Personajul verde și texturile lui
+actors/characters/    Cele trei personaje și texturile lor
 actors/player/        Controller first-person și scena jucătorului
 assets/              Modele, texturi și pachetul Kenney original
 Scenes/Toilet.tscn    Scena de toaletă adăugată de colegi
+Scenes/character_selection_screen.tscn  Alegerea personajului
+Sigletons/data.gd     Autoload Data, inclusiv personajul selectat
 maps/hub/            Benzinăria
 maps/playground/     Harta meciului de test
 maps/test_3d/        Scena inițială
@@ -110,9 +127,12 @@ După importarea proiectului în editor, rulează din rădăcina repository-ului
 godot --headless --path . --script res://tests/hub_flow_test.gd --log-file .godot/hub-test.log
 ```
 
-Testul verifică traseul meniu → hub → playground → hub → meniu, un singur
-personaj activ, mersul și săritura, detectarea de aproape, blocarea prin pereți,
-blocarea inputului în meniuri și respawn-ul. La succes afișează `HUB_FLOW_OK`.
+Testul verifică traseul meniu → selector → hub → playground → hub → meniu,
+toate cele trei personaje și păstrarea vitezelor/selecției, un singur player și o
+singură cameră, pornirea și respawn-ul la `PlayerSpawn`, schimbarea cu H sau
+terminalul de personaje (distanță, prompt și blocare în pauză), mersul
+și săritura, detectarea de aproape, blocarea prin pereți și blocarea inputului
+în meniuri. La succes afișează `HUB_FLOW_OK`.
 Poziția camerei, modelul și interfața se verifică suplimentar prin rulare grafică.
 
 ## Asset-uri

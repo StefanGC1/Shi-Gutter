@@ -1,7 +1,7 @@
 extends Control
 
 
-const HUB_SCENE := "res://maps/hub/hub.tscn"
+const CHARACTER_SELECTOR := "res://Scenes/character_selection_screen.tscn"
 
 
 func _ready() -> void:
@@ -10,7 +10,7 @@ func _ready() -> void:
 
 
 func _on_singleplayer_pressed() -> void:
-	get_tree().change_scene_to_file(HUB_SCENE)
+	get_tree().change_scene_to_file(CHARACTER_SELECTOR)
 
 
 func _on_multiplayer_pressed() -> void:

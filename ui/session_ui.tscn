@@ -52,13 +52,13 @@ layout_mode = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 30.0
-offset_top = -47.0
+offset_top = -62.0
 offset_right = 1000.0
 offset_bottom = -16.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 16
-text = "WASD / SĂGEȚI  ·  Mișcare     MOUSE  ·  Privire     SPACE  ·  Săritură     E  ·  Interacțiune     ESC  ·  Meniu  H - Schimba Character(doar in training)"
+text = "WASD / SĂGEȚI · Mișcare     MOUSE · Privire     SPACE · Săritură\nE · Interacțiune     H · Alege personajul     ESC · Meniu"
 
 [node name="Crosshair" type="Label" parent="Root/HUD" unique_id=1055190104]
 layout_mode = 0
