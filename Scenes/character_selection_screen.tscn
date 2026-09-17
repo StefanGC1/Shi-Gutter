@@ -1,5 +1,14 @@
 [gd_scene format=3 uid="uid://wksfpkk07fso"]
 
+[ext_resource type="Script" uid="uid://6ba0w073t6bu" path="res://Scenes/character_selection_screen.gd" id="1_nbj1f"]
+[ext_resource type="Texture2D" uid="uid://bgtrbgidmgba8" path="res://assets/images/OmVerdeUnlocked.png" id="1_ojdrq"]
+[ext_resource type="Texture2D" uid="uid://bgyfmnnm68s1p" path="res://assets/images/OmAlbastruUnlocked.png" id="2_mmnth"]
+[ext_resource type="Script" uid="uid://b8hgijcrmu46o" path="res://Scenes/button_script.gd" id="2_q0jmq"]
+[ext_resource type="Texture2D" uid="uid://bwcxepx51vb1g" path="res://assets/images/OmMovUnlocked.png" id="3_q0jmq"]
+[ext_resource type="Texture2D" uid="uid://dsdev28a68l3t" path="res://assets/images/OmAlbastruLocked.png" id="5_e76wu"]
+
+[sub_resource type="FontVariation" id="FontVariation_ojdrq"]
+
 [node name="CharacterSelectionScreen" type="Control" unique_id=179458269]
 layout_mode = 3
 anchors_preset = 15
@@ -7,23 +16,62 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_nbj1f")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1282118740]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=775991726]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -418.0
+offset_top = -346.0
+offset_right = 424.0
+offset_bottom = -96.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 46
 
-[node name="ButtonGreen" type="TextureButton" parent="." unique_id=320087545]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="ButtonGreen" type="TextureButton" parent="HBoxContainer" unique_id=320087545]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+texture_normal = ExtResource("1_ojdrq")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("2_q0jmq")
 
-[node name="ButtonBlue" type="TextureButton" parent="." unique_id=1606009479]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="ButtonBlue" type="TextureButton" parent="HBoxContainer" unique_id=1606009479]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+texture_normal = ExtResource("2_mmnth")
+texture_disabled = ExtResource("5_e76wu")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("2_q0jmq")
 
-[node name="ButtonWhite" type="TextureButton" parent="." unique_id=1706821470]
+[node name="ButtonPurple" type="TextureButton" parent="HBoxContainer" unique_id=1706821470]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+texture_normal = ExtResource("3_q0jmq")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("2_q0jmq")
+
+[node name="Label" type="Label" parent="." unique_id=1734848685]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 90.0
+offset_top = 114.0
+offset_right = 1194.0
+offset_bottom = 413.0
+theme_override_colors/font_color = Color(0.63990617, 0.4636485, 0.004276321, 1)
+theme_override_fonts/font = SubResource("FontVariation_ojdrq")
+theme_override_font_sizes/font_size = 108
+text = "Select your character
+"
+
+[connection signal="mouse_entered" from="HBoxContainer/ButtonGreen" to="HBoxContainer/ButtonGreen" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/ButtonGreen" to="HBoxContainer/ButtonGreen" method="_on_mouse_exited"]
+[connection signal="pressed" from="HBoxContainer/ButtonGreen" to="." method="_on_button_green_pressed"]
+[connection signal="pressed" from="HBoxContainer/ButtonBlue" to="." method="_on_button_blue_pressed"]
+[connection signal="pressed" from="HBoxContainer/ButtonPurple" to="." method="_on_button_purple_pressed"]

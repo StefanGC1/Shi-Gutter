@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmqpvct2ihff"
-path="res://.godot/imported/OmMovLocked.png-a1bc432d9fc9982caded23919e0765e6.ctex"
+uid="uid://blra6ofcsrlok"
+path="res://.godot/imported/OmMovLocked2.png-872cc6996a4abb088ac87b96e53e1735.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/OmMovLocked.png"
-dest_files=["res://.godot/imported/OmMovLocked.png-a1bc432d9fc9982caded23919e0765e6.ctex"]
+source_file="res://assets/images/OmMovLocked2.png"
+dest_files=["res://.godot/imported/OmMovLocked2.png-872cc6996a4abb088ac87b96e53e1735.ctex"]
 
 [params]
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dm4gf140yfr3q" path="res://actors/player/player_3d.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://chuyjtsyvq3qs" path="res://systems/world_session.gd" id="2_session"]
-[ext_resource type="PackedScene" path="res://ui/session_ui.tscn" id="3_ui"]
+[ext_resource type="PackedScene" uid="uid://d3nkc5shq2nr6" path="res://ui/session_ui.tscn" id="3_ui"]
 [ext_resource type="Script" uid="uid://chnj32rccfxm2" path="res://systems/interaction/interactable.gd" id="4_interactable"]
 [ext_resource type="PackedScene" uid="uid://bi3e2vf3b1xjh" path="res://Scenes/Toilet.tscn" id="5_toilet"]
 
