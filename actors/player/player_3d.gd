@@ -1,3 +1,4 @@
+class_name Player3D
 extends CharacterBody3D
 
 @export var speed := 5.0
@@ -81,7 +82,7 @@ func _update_locomotion(walking: bool) -> void:
 		return
 	_walking = walking
 	if walking:
-		animation_player.play(&"locomotion/walk")
+		animation_player.play(&"MersCaracter1")
 	else:
 		# No idle/jump clip in this GLB yet. Use its neutral standing pose.
 		animation_player.stop()
