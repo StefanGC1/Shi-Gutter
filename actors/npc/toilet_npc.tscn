@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dv8tuhmg1js25"]
+
+[ext_resource type="Script" path="res://actors/npc/toilet_npc.gd" id="1_script"]
+
+[sub_resource type="CapsuleShape3D" id="NpcShape"]
+radius = 0.3
+height = 1.77
+
+[node name="ToiletNPC" type="CharacterBody3D" groups=["npc"]]
+floor_snap_length = 0.25
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.885, 0)
+shape = SubResource("NpcShape")
+
+[node name="Character" type="Node3D" parent="."]
