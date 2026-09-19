@@ -592,6 +592,24 @@ _data = {
 &"StatToaleta": SubResource("Animation_pi40k")
 }
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_a5m86"]
+angle_min = 1.0728835e-05
+angle_max = 1.0728835e-05
+direction = Vector3(0, 0, -1)
+spread = 5.0
+initial_velocity_min = 5.0
+initial_velocity_max = 9.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a5m86"]
+albedo_color = Color(0.8384917, 0.8227136, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_a5m86"]
+material = SubResource("StandardMaterial3D_a5m86")
+radius = 0.03
+height = 0.06
+
+[sub_resource type="Skin" id="Skin_66iei"]
+
 [node name="Player3D" type="CharacterBody3D" unique_id=1676402744 groups=["player"]]
 floor_snap_length = 0.25
 script = ExtResource("1_a5m86")
@@ -769,3 +787,10 @@ fov = 72.0
 target_position = Vector3(0, 0, -2.8)
 collision_mask = 5
 script = ExtResource("4_1fh2e")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="CameraPivot" unique_id=1470454859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020218603, -0.83723474, 0.15626204)
+amount = 250
+process_material = SubResource("ParticleProcessMaterial_a5m86")
+draw_pass_1 = SubResource("SphereMesh_a5m86")
+draw_skin = SubResource("Skin_66iei")
