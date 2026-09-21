@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+const CharacterAnimations = preload("res://systems/character_animations.gd")
+
 ## NPC care detecteaza toaletele din scena, merge la cea mai apropiata libera
 ## si se aseaza pe ea cu animatia "StatToaleta" din GLB.
 ##
@@ -54,7 +56,6 @@ var _toilet: Node3D = null
 var _model: Node3D = null
 var _anim: AnimationPlayer = null
 var _skeleton: Skeleton3D = null
-var _collision: CollisionShape3D = null
 var _rescan_timer := 0.0
 var _stuck_timer := 0.0
 var _unstuck_timer := 0.0
@@ -65,7 +66,6 @@ var _sit_t := 0.0
 var _current_anim := &""
 
 func _ready() -> void:
-	_collision = get_node_or_null(^"CollisionShape3D") as CollisionShape3D
 	_spawn_model()
 	_pick_toilet()
 
@@ -94,6 +94,7 @@ func _spawn_model() -> void:
 func _build_animation_library() -> void:
 	if _anim == null:
 		return
+	CharacterAnimations.bind_libraries(_anim, _skeleton)
 	var library := AnimationLibrary.new()
 	_add_looped(library, &"walk", walk_animation)
 	_add_looped(library, &"sit", sit_animation)
@@ -103,8 +104,7 @@ func _add_looped(library: AnimationLibrary, key: StringName, source: StringName)
 	if not _anim.has_animation(source):
 		push_warning("ToiletNPC: animatia '%s' nu exista in GLB." % source)
 		return
-	var clip := _anim.get_animation(source).duplicate() as Animation
-	clip.loop_mode = Animation.LOOP_LINEAR
+	var clip := CharacterAnimations.local_clip(_anim.get_animation(source), _anim, _skeleton, key == &"walk")
 	library.add_animation(key, clip)
 
 func _play(key: StringName) -> void:
@@ -145,6 +145,8 @@ func _find_toilets() -> Array:
 	return clean
 
 func _is_free(toilet: Node3D) -> bool:
+	if toilet.has_method("is_available_for"):
+		return toilet.is_available_for(self)
 	if not toilet.has_meta(&"occupied_by"):
 		return true
 	var owner_npc = toilet.get_meta(&"occupied_by")
@@ -167,11 +169,20 @@ func _pick_toilet() -> void:
 		return
 	_release_toilet()
 	_toilet = best
-	_toilet.set_meta(&"occupied_by", self)
+	if _toilet.has_method("try_reserve"):
+		if not _toilet.try_reserve(self):
+			_toilet = null
+			_state = State.SEARCH
+			return
+	else:
+		_toilet.set_meta(&"occupied_by", self)
 	_state = State.WALK
 	toilet_chosen.emit(_toilet)
 
 func _release_toilet() -> void:
+	if is_instance_valid(_toilet) and _toilet.has_method("release"):
+		_toilet.release(self)
+		return
 	if is_instance_valid(_toilet) and _toilet.has_meta(&"occupied_by"):
 		if _toilet.get_meta(&"occupied_by") == self:
 			_toilet.remove_meta(&"occupied_by")
@@ -199,6 +210,9 @@ func _sit_point() -> Vector3:
 # ------------------------------------------------------------------ physics
 
 func _physics_process(delta: float) -> void:
+	if _state != State.SEARCH and not is_instance_valid(_toilet):
+		_state = State.SEARCH
+		_rescan_timer = 0
 	if not is_on_floor() and _state != State.SIT:
 		velocity += get_gravity() * delta
 
@@ -271,8 +285,7 @@ func _process_turn(delta: float) -> void:
 		_sit_t = 0.0
 		_state = State.SIT
 		velocity = Vector3.ZERO
-		if _collision != null:
-			_collision.disabled = true
+		# Keep the body hittable while seated; SIT does not call move_and_slide().
 		_play(&"sit")
 		seated.emit(_toilet)
 

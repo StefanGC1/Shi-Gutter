@@ -789,6 +789,8 @@ collision_mask = 5
 script = ExtResource("4_1fh2e")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="CameraPivot" unique_id=1470454859]
+visible = false
+emitting = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020218603, -0.83723474, 0.15626204)
 amount = 250
 process_material = SubResource("ParticleProcessMaterial_a5m86")

@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://t8dcriba5rg2" path="res://Scenes/health_bar_hud.tscn" id="6_42lni"]
 [ext_resource type="PackedScene" uid="uid://blxke0ddtx85n" path="res://actors/characters/DoamnaMov.glb" id="6_ws22d"]
 [ext_resource type="PackedScene" uid="uid://dv8tuhmg1js25" path="res://actors/npc/toilet_npc.tscn" id="7_npc"]
+[ext_resource type="PackedScene" path="res://Scenes/pee_target.tscn" id="8_target"]
+[ext_resource type="PackedScene" path="res://Scenes/practice_challenge.tscn" id="9_challenge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
 sky_top_color = Color(0.08, 0.2, 0.42, 1)
@@ -108,5 +110,29 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.637276, 0, 5.798258)
 [node name="NpcDoamna" parent="." unique_id=2099227007 instance=ExtResource("7_npc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.661705, 0, 7.6291194)
 model_scene = ExtResource("6_ws22d")
+
+[node name="PracticeToilet" parent="." instance=ExtResource("2_m67mg")]
+position = Vector3(5, 0.258, 3)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="PracticeSign" type="Label3D" parent="."]
+position = Vector3(6.7, 1.9, 3)
+billboard = 1
+font_size = 38
+outline_size = 8
+text = "TOALETĂ DE ANTRENAMENT\nE: așază-te / ridică-te · R: rundă 30 s\nCLICK STÂNGA: jet · MOUSE: țintește"
+
+[node name="PeeTarget" parent="." instance=ExtResource("8_target")]
+position = Vector3(5, 1, -3)
+
+[node name="PeeTargetMiddle" parent="." instance=ExtResource("8_target")]
+position = Vector3(7.3, 1.6, -4)
+
+[node name="PeeTargetRight" parent="." instance=ExtResource("8_target")]
+position = Vector3(9.6, 1, -3)
+
+[node name="PracticeChallenge" parent="." instance=ExtResource("9_challenge")]
+toilet_path = NodePath("../PracticeToilet")
+target_paths = Array[NodePath]([NodePath("../PeeTarget"), NodePath("../PeeTargetMiddle"), NodePath("../PeeTargetRight")])
 
 [node name="HealthBarHud" parent="." unique_id=60423207 instance=ExtResource("6_42lni")]

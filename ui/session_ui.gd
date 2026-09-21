@@ -24,7 +24,7 @@ func _ready() -> void:
 func configure(is_hub: bool) -> void:
 	_is_hub = is_hub
 	$Root/HUD/Location.text = "ULTIMA OPRIRE  /  HUB" if is_hub else "PLAYGROUND  /  MECI DE TEST"
-	$Root/HUD/Objective.text = "Mergi la restaurant și folosește terminalul de la tejghea." if is_hub else "Testează mișcarea și platformele. ESC → Înapoi în hub."
+	$Root/HUD/Objective.text = "Mergi la restaurant și folosește terminalul de la tejghea." if is_hub else "Antrenament în dreapta: E pentru așezare · R pentru rundă 30 s · CLICK STÂNGA pentru jet."
 
 func set_prompt(text: String) -> void:
 	$Root/HUD/Prompt.text = text

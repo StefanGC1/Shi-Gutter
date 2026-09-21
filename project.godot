@@ -69,6 +69,15 @@ select_character={
 ]
 }
 
+shoot={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+practice_round={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":82)]
+}
+
 [layer_names]
 
 3d_render/layer_1="World"

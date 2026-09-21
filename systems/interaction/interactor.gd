@@ -5,6 +5,7 @@ signal prompt_changed(text: String)
 var interaction_enabled := true
 var target: Node
 var _prompt := ""
+var prompt_override := ""
 
 func _physics_process(_delta: float) -> void:
 	refresh_target()
@@ -24,6 +25,8 @@ func refresh_target() -> void:
 	var text := ""
 	if is_instance_valid(target):
 		text = "[E]  " + str(target.get_interaction_prompt())
+	if not prompt_override.is_empty():
+		text = prompt_override
 	if text != _prompt:
 		_prompt = text
 		prompt_changed.emit(text)

@@ -25,6 +25,9 @@ Pentru a rula o scenă individuală, deschide-o și apasă **F6**.
 | Privire | Mouse |
 | Săritură | Space |
 | Interacțiune cu obiectul privit | E |
+| Așezare pe o toaletă liberă / ridicare | E |
+| Jet de pișat, doar așezat | Ține click stânga; țintește cu mouse-ul |
+| Pornește/reia o rundă de țintire, pe toaleta de antrenament | R |
 | Alege alt personaj (în timpul jocului); după alegere revii în hub | H |
 | Deschide/închide meniul, anulează interacțiunea | Escape |
 
@@ -55,8 +58,11 @@ camere externe care includ stratul 2.
 
 Animația `MersCaracter1` este folosită pentru mers. GLB-ul nu conține animații
 dedicate de idle sau săritură: momentan se folosește postura neutră în acele stări.
-Animațiile originale, inclusiv `Salut` și `StatToaleta`, sunt păstrate pentru
-integrarea selectorului și a interacțiunii cu toaletele.
+Animațiile originale, inclusiv `Salut` și `StatToaleta`, sunt păstrate.
+`systems/character_animations.gd` copiază bibliotecile pentru fiecare instanță și
+leagă pistele la scheletul real, inclusiv după redenumirea armăturii cu Make Local.
+Mersul rulează în buclă; `StatToaleta` rulează o dată și rămâne în poziția așezat.
+Nu trebuie modificat importul GLB pentru a activa bucla la runtime.
 
 ## Hub și intrarea în meci
 
@@ -80,6 +86,47 @@ Escape deschide un meniu cu continuare, întoarcere în hub (din playground) și
 
 ## Integrare cu munca echipei
 
+### Toaleta și jetul
+
+În hub poți folosi toaletele libere. În playground, în dreapta punctului de
+pornire, există o **toaletă de antrenament** orientată spre trei ținte turcoaz.
+Privește vasul de aproape și apasă E. Camera coboară, mișcarea și săritura sunt
+blocate, iar mouse-ul controlează țintirea (75° în stânga/dreapta).
+Ține click stânga pentru jet; ținta clipește și numără loviturile.
+Apasă E din nou ca să te ridici. Ridicarea verifică spațiul liber pentru corp.
+
+### Mini-joc de țintire
+
+Pe toaleta de antrenament, **R** pornește o rundă de **30 de secunde**.
+Lovește ținta **galbenă**, marcată „ȚINTEȘTE AICI”, cu trei picături pentru
+**10 puncte**. Următoarea țintă se activează automat; țintele gri nu dau puncte.
+HUD-ul arată timpul, scorul și recordul din vizita curentă în playground.
+Recordul nu este salvat pe disc și se resetează când părăsești harta.
+
+Escape îngheață cronometrul până la continuare. E/ridicarea sau respawn-ul
+anulează runda, fără a înregistra un record. După expirarea timpului, R începe
+o rundă nouă. R nu repornește o rundă în desfășurare și nu funcționează de pe
+alte toalete. În afara rundelor poți trage liber, cu contoarele de lovituri.
+
+Logica este izolată în `systems/practice_challenge.gd`, cu HUD-ul în
+`Scenes/practice_challenge.tscn`; durata și loviturile necesare se pot regla
+în Inspector. Folosește semnalul `hit_received(source)` al țintelor, fără
+a modifica HP-ul NPC-urilor sau datele globale ale colegilor.
+
+### Ocupare și coliziuni
+
+Toaletele rezervate de NPC-uri, inclusiv cele spre care încă merg, apar ocupate
+și nu pot fi luate de jucător. Aceeași rezervare `occupied_by` este folosită de
+NPC-uri și player. Ridicarea, respawn-ul și eliminarea playerului eliberează vasul.
+Escape oprește jetul și deschide meniul, păstrând locul ocupat; după continuare
+trebuie apăsat din nou click stânga. H permite în continuare schimbarea personajului.
+
+Jetul este comun tuturor celor trei personaje, cu picături balistice și verificare
+de coliziune între pozițiile succesive: pereții opresc loviturile. Există limite
+pentru picături/stropi, iar efectele sunt eliminate la pauză și ridicare.
+Prototipul `GPUParticles3D` din scena verde este păstrat, dar dezactivat.
+Acesta este gameplay local; rezervările și loviturile nu sunt sincronizate în rețea.
+
 - **Character selector:** `Scenes/character_selection_screen.gd` setează
   `Data.SelectPlayer` și deschide hub-ul. `systems/world_session.gd` instanțiază
   scena aleasă din `actors/player/` și expune personajul activ prin `new_player`.
@@ -93,8 +140,17 @@ Escape deschide un meniu cu continuare, întoarcere în hub (din playground) și
   și semnalul lui `activated(player)`. Corpul fizic trebuie să fie pe stratul 1
   sau 3; stratul 3 este rezervat obiectelor interactive. Nu adăuga încă un handler
   global pentru E în scriptul toaletei.
-- **Toalete:** sunt plasate în hub și păstrate în playground. Așezarea cu E și
-  animația `StatToaleta` nu sunt conectate încă, fiind partea colegului.
+- **Toalete:** `systems/interaction/toilet.gd` este atașat rădăcinii scenei
+  `Scenes/Toilet.tscn`. Expune `try_reserve(actor)`, `release(actor)`,
+  `occupant()` și contractul `interact(actor)`. `seat_offset` reglează poziția
+  controllerului înainte de deplasarea oaselor din animația de așezare.
+- **Viață/lovituri:** `new_player.pee_hit(collider, point, normal, source)` emite
+  o dată pentru fiecare picătură care lovește primul corp fizic. Colegul poate
+  conecta sistemul de HP aici sau poate implementa
+  `receive_pee_hit(source, point, normal)` pe corpul lovit. Folosește o singură
+  variantă pentru damage, pentru a nu aplica de două ori aceeași lovitură.
+  Momentan ținta de antrenament numără loviturile; nu este introdus un sistem de
+  viață paralel. Coliziunile NPC-urilor rămân active și când sunt așezați.
 - **Matchmaking/QTE:** confirmarea meniului este gestionată în
   `systems/world_session.gd`. Acum deschide direct harta de test; serviciul de
   matchmaking și logica meciului pot fi conectate ulterior aici.
@@ -125,6 +181,8 @@ După importarea proiectului în editor, rulează din rădăcina repository-ului
 
 ```text
 godot --headless --path . --script res://tests/hub_flow_test.gd --log-file .godot/hub-test.log
+godot --headless --path . --script res://tests/toilet_flow_test.gd --log-file .godot/toilet-test.log
+godot --headless --path . --script res://tests/practice_challenge_test.gd --log-file .godot/practice-test.log
 ```
 
 Testul verifică traseul meniu → selector → hub → playground → hub → meniu,
@@ -134,6 +192,11 @@ terminalul de personaje (distanță, prompt și blocare în pauză), mersul
 și săritura, detectarea de aproape, blocarea prin pereți și blocarea inputului
 în meniuri. La succes afișează `HUB_FLOW_OK`.
 Poziția camerei, modelul și interfața se verifică suplimentar prin rulare grafică.
+`TOILET_FLOW_OK` confirmă testele celor trei rig-uri (oase animate efectiv),
+izolarea între două instanțe, ocuparea comună NPC/player, raza și pereții,
+așezarea/ridicarea, jetul, loviturile pe țintă, pauza și eliberarea rezervării.
+`PRACTICE_CHALLENGE_OK` verifică lovituri reale pe toate trei țintele cu fiecare
+personaj, scorul, expirarea timpului, pauza, reluarea, anularea și schimbarea scenei.
 
 ## Asset-uri
 
