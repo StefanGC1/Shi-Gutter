@@ -2,9 +2,14 @@ class_name Player3D
 extends CharacterBody3D
 
 signal pee_hit(collider: Node, point: Vector3, normal: Vector3, source: Node)
+## Emis la fiecare fizica cu fractiunea (0..1) ramasa din rezerva de pipi,
+## ca UI-ul sa poata desena bara.
+signal fuel_changed(fraction: float)
 
 const CharacterAnimations = preload("res://systems/character_animations.gd")
 const PeeStream = preload("res://systems/pee_stream.gd")
+# PeeFuel are class_name global (in pee_fuel.gd), deci nu se mai preincarca aici
+# (evita eroarea "shadowed global identifier").
 
 @export var speed := 5.0
 @export var acceleration := 22.0
@@ -26,7 +31,12 @@ var pee_stream: Node3D
 var _standing_transform: Transform3D
 var _standing_camera_position: Vector3
 var _shoot_requested := false
+var _aiming := false
 var _seated := false
+## Cand e setat (de un NPC de duel), jucatorul trage automat spre acest nod,
+## indiferent daca sta jos sau nu, pana la end_auto_duel().
+var _auto_duel_target: Node3D = null
+var _fuel := PeeFuel.new()
 
 func is_seated() -> bool:
 	return _seated
@@ -44,7 +54,7 @@ func _ready() -> void:
 	animation_player.add_animation_library(&"locomotion", library)
 	pee_stream = PeeStream.new()
 	pee_stream.name = "PeeStream"
-	pee_stream.position = Vector3(0, 0.65, -0.25)
+	pee_stream.position = Vector3(0, 0.5, -0.32)
 	pee_stream.source = self
 	pee_stream.aim_camera = camera
 	add_child(pee_stream)
@@ -74,18 +84,34 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action("shoot"):
 		_shoot_requested = event.is_pressed() and is_seated()
 		get_viewport().set_input_as_handled()
+	elif event.is_action("aim"):
+		_aiming = event.is_pressed() and is_seated()
+		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton and event.pressed:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+	# Jucatorul NU are homing: pee_stream.aim_target ramane mereu null pentru el,
+	# deci fara CLICK DREAPTA (aim) jetul e complet aleator (wild_spray), iar cu
+	# CLICK DREAPTA urmareste efectiv camera, la fel ca orice tintire manuala.
 	if is_seated():
 		if not is_instance_valid(seated_toilet) or not seated_toilet.is_inside_tree():
 			respawn()
 			return
 		velocity = Vector3.ZERO
-		pee_stream.firing = controls_enabled and _shoot_requested
+		# Playerul NU trage niciodata automat - doar cat tine CLICK STANGA apasat.
+		var want_fire_seated := controls_enabled and _shoot_requested
+		pee_stream.firing = _fuel.update(delta, want_fire_seated)
+		# Fara CLICK DREAPTA (aim), jetul e complet aleator; cu aim, urmareste camera.
+		pee_stream.wild_spray = _shoot_requested and not _aiming
+		pee_stream.show_preview = _aiming
+		fuel_changed.emit(_fuel.fraction())
 		return
-	pee_stream.firing = false
+	# Stand in picioare: nu se trage niciodata automat.
+	pee_stream.firing = _fuel.update(delta, false)
+	pee_stream.wild_spray = false
+	pee_stream.show_preview = false
+	fuel_changed.emit(_fuel.fraction())
 	var input_vector := Vector2.ZERO
 	if controls_enabled:
 		input_vector = (Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -105,10 +131,11 @@ func _physics_process(delta: float) -> void:
 
 func set_controls_enabled(value: bool) -> void:
 	controls_enabled = value
-	interactor.prompt_override = "[E] Ridică-te  ·  CLICK STÂNGA: jet  ·  MOUSE: țintește" if value and is_seated() else ""
+	interactor.prompt_override = "[E] Ridică-te  ·  CLICK STÂNGA: tragi (random fără țintă)  ·  CLICK DREAPTA: țintești precis" if value and is_seated() else ""
 	interactor.set_interaction_enabled(value and not is_seated())
 	if not value:
 		_shoot_requested = false
+		_aiming = false
 		pee_stream.stop()
 		velocity.x = 0.0
 		velocity.z = 0.0
@@ -134,6 +161,18 @@ func _update_locomotion(walking: bool) -> void:
 		animation_player.stop()
 		skeleton.reset_bone_poses()
 
+## Apelat de un NPC de duel cand incepe sa te stropeasca. Nu te face sa tragi
+## automat (asta a fost eliminat) - doar retine cine e "adversarul" curent,
+## in caz ca alt cod vrea sa stie ca esti intr-un duel.
+func begin_auto_duel(target: Node3D) -> void:
+	_auto_duel_target = target
+
+## Apelat cand duelul se termina (NPC-ul se ridica, iese din scena etc.).
+func end_auto_duel() -> void:
+	_auto_duel_target = null
+	if not is_seated():
+		pee_stream.firing = false
+
 func try_sit(toilet: Node3D) -> bool:
 	if not controls_enabled or is_seated() or not is_instance_valid(toilet) or not toilet.has_method("try_reserve"):
 		return false
@@ -145,6 +184,7 @@ func try_sit(toilet: Node3D) -> bool:
 	seated_toilet = toilet
 	_seated = true
 	_shoot_requested = false
+	_aiming = false
 	_walking = false
 	velocity = Vector3.ZERO
 	global_transform = toilet.seat_transform()
@@ -185,6 +225,7 @@ func _leave_seat() -> void:
 	seated_toilet = null
 	_seated = false
 	_shoot_requested = false
+	_aiming = false
 	pee_stream.stop()
 	camera_pivot.position = _standing_camera_position
 	camera_pivot.rotation = Vector3.ZERO

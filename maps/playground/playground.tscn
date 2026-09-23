@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dv8tuhmg1js25" path="res://actors/npc/toilet_npc.tscn" id="7_npc"]
 [ext_resource type="PackedScene" path="res://Scenes/pee_target.tscn" id="8_target"]
 [ext_resource type="PackedScene" path="res://Scenes/practice_challenge.tscn" id="9_challenge"]
+[ext_resource type="Script" uid="uid://cm56rv2lx2yr8" path="res://actors/npc/toilet_pee_duel_npc.gd" id="10_duel"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
 sky_top_color = Color(0.08, 0.2, 0.42, 1)
@@ -111,27 +112,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.637276, 0, 5.798258)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.661705, 0, 7.6291194)
 model_scene = ExtResource("6_ws22d")
 
-[node name="PracticeToilet" parent="." instance=ExtResource("2_m67mg")]
-position = Vector3(5, 0.258, 3)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="PracticeToilet" parent="." unique_id=1468802682 instance=ExtResource("2_m67mg")]
+transform = Transform3D(0.99886173, 0, -0.047699053, 0, 1, 0, 0.047699053, 0, 0.99886173, 5, 0.258, 1.2400455)
 
-[node name="PracticeSign" type="Label3D" parent="."]
-position = Vector3(6.7, 1.9, 3)
+[node name="PracticeToilet2" parent="." unique_id=2078269480 instance=ExtResource("2_m67mg")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5, 0.258, 4.6)
+
+[node name="NpcPeeDuel" parent="." unique_id=2106857331 instance=ExtResource("7_npc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.7, 0, 5)
+script = ExtResource("10_duel")
+duel_toilets = Array[NodePath]([NodePath("../PracticeToilet"), NodePath("../PracticeToilet2")])
+pee_start_delay = 0.5
+hit_chance = 0.5
+pee_origin = Vector3(0, 0.32, 0.35)
+
+[node name="PracticeSign" type="Label3D" parent="." unique_id=939560473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.7, 1.9, 3)
 billboard = 1
+text = "TOALETĂ DE ANTRENAMENT
+E: așază-te / ridică-te · R: rundă 30 s
+CLICK STÂNGA: tragi (random fără țintă) · CLICK DREAPTA: țintești precis"
 font_size = 38
 outline_size = 8
-text = "TOALETĂ DE ANTRENAMENT\nE: așază-te / ridică-te · R: rundă 30 s\nCLICK STÂNGA: jet · MOUSE: țintește"
 
-[node name="PeeTarget" parent="." instance=ExtResource("8_target")]
-position = Vector3(5, 1, -3)
+[node name="PeeTarget" parent="." unique_id=499187993 instance=ExtResource("8_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -3)
 
-[node name="PeeTargetMiddle" parent="." instance=ExtResource("8_target")]
-position = Vector3(7.3, 1.6, -4)
+[node name="PeeTargetMiddle" parent="." unique_id=2014003970 instance=ExtResource("8_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.3, 1.6, -4)
 
-[node name="PeeTargetRight" parent="." instance=ExtResource("8_target")]
-position = Vector3(9.6, 1, -3)
+[node name="PeeTargetRight" parent="." unique_id=927612281 instance=ExtResource("8_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 1, -3)
 
-[node name="PracticeChallenge" parent="." instance=ExtResource("9_challenge")]
+[node name="PracticeChallenge" parent="." unique_id=632862821 instance=ExtResource("9_challenge")]
 toilet_path = NodePath("../PracticeToilet")
 target_paths = Array[NodePath]([NodePath("../PeeTarget"), NodePath("../PeeTargetMiddle"), NodePath("../PeeTargetRight")])
 
