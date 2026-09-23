@@ -60,6 +60,45 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 16
 text = "WASD / SĂGEȚI · Mișcare     MOUSE · Privire     SPACE · Săritură\nE · Interacțiune     H · Alege personajul     ESC · Meniu"
 
+[node name="FuelBar" type="Control" parent="Root/HUD" unique_id=812934501]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -56.0
+offset_top = 90.0
+offset_right = -30.0
+offset_bottom = 310.0
+
+[node name="Label" type="Label" parent="Root/HUD/FuelBar" unique_id=812934502]
+layout_mode = 0
+offset_left = -30.0
+offset_top = -22.0
+offset_right = 56.0
+offset_bottom = -2.0
+theme_override_colors/font_color = Color(1, 0.83, 0.08, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "PISS"
+horizontal_alignment = 1
+
+[node name="Background" type="ColorRect" parent="Root/HUD/FuelBar" unique_id=812934503]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.05, 0.05, 0.65)
+
+[node name="Fill" type="ColorRect" parent="Root/HUD/FuelBar" unique_id=812934504]
+layout_mode = 0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+color = Color(1, 0.83, 0.08, 1)
+
 [node name="Crosshair" type="Label" parent="Root/HUD" unique_id=1055190104]
 layout_mode = 0
 anchor_left = 0.5

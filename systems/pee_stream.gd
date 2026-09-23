@@ -12,11 +12,34 @@ const MAX_SPLASHES := 24
 
 var firing := false
 var source: CharacterBody3D
+## RID-uri suplimentare ignorate de raycast (ex: toaleta pe care sta sursa,
+## ca jetul sa nu se blocheze in propriul vas cand porneste de langa el).
+var extra_exclude: Array[RID] = []
+## Folosit cand tintirea e manuala (jucatorul, cu mouse-ul): jetul urmareste camera.
 var aim_camera: Camera3D
+## Folosit cand tintirea e automata (NPC-uri): jetul tinteste acest nod (cu o
+## sansa `aim_target_accuracy` sa chiar il nimereasca - vezi mai jos). Are
+## prioritate fata de aim_camera. NU inseamna "homing": fiecare strop e tras o
+## singura data spre un punct calculat la lansare, nu isi corecteaza traiectoria in zbor.
+var aim_target: Node3D = null
+## Cand e true (fara aim_target sau cand se rateaza tinta): jetul zboara
+## complet aleator (in orice directie, inclusiv spre sursa insasi) - fara
+## nicio urmarire a vreunei tinte.
+var wild_spray := false
+## Offset pe verticala fata de aim_target (tinteste cam la piept, nu la picioare).
+@export var aim_target_offset := Vector3(0, 1.2, 0)
+## Sansa (0-1) ca un strop tras spre aim_target sa il nimereasca cu adevarat;
+## restul stropilor sunt complet aleatori (nu doar o mica deviatie) - fara homing.
+@export_range(0.0, 1.0) var aim_target_accuracy := 1.0
+## Cand e true (doar tintire manuala, cu aim_camera): deseneaza un mic "cerc"
+## pe suprafata unde ar ateriza jetul daca ai trage acum.
+var show_preview := false
+
 var _clock := 0.0
 var _drops: Array[Dictionary] = []
 var _splashes: Array[Dictionary] = []
 var _mesh: SphereMesh
+var _preview: MeshInstance3D
 
 func _ready() -> void:
 	var material := StandardMaterial3D.new()
@@ -29,6 +52,23 @@ func _ready() -> void:
 	_mesh.radial_segments = 6
 	_mesh.rings = 3
 	_mesh.material = material
+	var preview_mesh := CylinderMesh.new()
+	preview_mesh.top_radius = 0.32
+	preview_mesh.bottom_radius = 0.32
+	preview_mesh.height = 0.015
+	preview_mesh.radial_segments = 20
+	var preview_material := StandardMaterial3D.new()
+	preview_material.albedo_color = Color(1, 0.83, 0.08, 0.55)
+	preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	preview_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	preview_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	preview_mesh.material = preview_material
+	_preview = MeshInstance3D.new()
+	_preview.mesh = preview_mesh
+	_preview.top_level = true
+	_preview.visible = false
+	_preview.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_preview)
 
 func stop() -> void:
 	firing = false
@@ -39,6 +79,8 @@ func stop() -> void:
 		splash.visual.queue_free()
 	_drops.clear()
 	_splashes.clear()
+	if is_instance_valid(_preview):
+		_preview.visible = false
 
 func _visual(at: Vector3) -> MeshInstance3D:
 	var visual := MeshInstance3D.new()
@@ -50,23 +92,63 @@ func _visual(at: Vector3) -> MeshInstance3D:
 	return visual
 
 func _ray(from: Vector3, to: Vector3) -> Dictionary:
-	var query := PhysicsRayQueryParameters3D.create(from, to, 5, [source.get_rid()])
+	var exclude: Array[RID] = [source.get_rid()]
+	exclude.append_array(extra_exclude)
+	var query := PhysicsRayQueryParameters3D.create(from, to, 5, exclude)
 	query.hit_from_inside = true
 	return get_world_3d().direct_space_state.intersect_ray(query)
+
+func _random_point() -> Vector3:
+	# Complet aleator: orice directie, orice unghi, poate nimeri chiar sursa.
+	var random_dir := Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), randf_range(-1.0, 1.0))
+	if random_dir.length_squared() < 0.0001:
+		random_dir = Vector3.UP
+	random_dir = random_dir.normalized()
+	return global_position + random_dir * randf_range(1.5, 6.0)
+
+## Returneaza punctul de unde "vine" jetul si punctul spre care tinteste,
+## fie dupa camera (tintire manuala), fie dupa aim_target (NPC), fie complet
+## aleator. Nu exista homing: fiecare strop primeste o tinta fixa la lansare.
+func _aim_from_to() -> Dictionary:
+	if aim_target != null and is_instance_valid(aim_target):
+		if randf() <= aim_target_accuracy:
+			var point := aim_target.global_position + aim_target_offset
+			return {"from": global_position, "to": point}
+		# Rateaza: complet aleator, nu doar o mica deviatie langa tinta.
+		return {"from": global_position, "to": _random_point()}
+	if wild_spray:
+		return {"from": global_position, "to": _random_point()}
+	var aim := aim_camera.global_position - aim_camera.global_basis.z * 25
+	return {"from": aim_camera.global_position, "to": aim}
 
 func _emit_drop() -> void:
 	if _drops.size() >= MAX_DROPS:
 		return
-	var aim := aim_camera.global_position - aim_camera.global_basis.z * 25
-	var obstruction := _ray(aim_camera.global_position, aim)
+	var aim := _aim_from_to()
+	var target_point: Vector3 = aim.to
+	var obstruction := _ray(aim.from, target_point)
 	if not obstruction.is_empty():
-		aim = obstruction.position
+		target_point = obstruction.position
 	var origin := global_position
-	_drops.append({"visual": _visual(origin), "velocity": origin.direction_to(aim) * speed, "age": 0.0})
+	_drops.append({"visual": _visual(origin), "velocity": origin.direction_to(target_point) * speed, "age": 0.0})
 
 func _physics_process(delta: float) -> void:
-	if not is_instance_valid(source) or not is_instance_valid(aim_camera):
+	if not is_instance_valid(source):
 		return
+	var has_aim := (aim_target != null and is_instance_valid(aim_target)) or is_instance_valid(aim_camera)
+	if not has_aim:
+		return
+	if show_preview and is_instance_valid(aim_camera):
+		var preview_target := aim_camera.global_position - aim_camera.global_basis.z * 25
+		var preview_hit := _ray(aim_camera.global_position, preview_target)
+		if not preview_hit.is_empty():
+			_preview.visible = true
+			_preview.global_position = preview_hit.position + preview_hit.normal * 0.02
+			_preview.global_basis = Basis(Quaternion(Vector3.UP, preview_hit.normal))
+		else:
+			_preview.visible = false
+	else:
+		_preview.visible = false
 	if firing:
 		_clock += delta
 		while _clock >= 1.0 / drops_per_second:

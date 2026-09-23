@@ -13,6 +13,7 @@ signal main_menu_requested
 @onready var resume: Button = $Root/Overlay/Center/Card/Margin/Content/Resume
 @onready var return_hub: Button = $Root/Overlay/Center/Card/Margin/Content/ReturnHub
 @onready var main_menu: Button = $Root/Overlay/Center/Card/Margin/Content/MainMenu
+@onready var fuel_fill: ColorRect = $Root/HUD/FuelBar/Fill
 var _is_hub := false
 
 func _ready() -> void:
@@ -24,7 +25,12 @@ func _ready() -> void:
 func configure(is_hub: bool) -> void:
 	_is_hub = is_hub
 	$Root/HUD/Location.text = "ULTIMA OPRIRE  /  HUB" if is_hub else "PLAYGROUND  /  MECI DE TEST"
-	$Root/HUD/Objective.text = "Mergi la restaurant și folosește terminalul de la tejghea." if is_hub else "Antrenament în dreapta: E pentru așezare · R pentru rundă 30 s · CLICK STÂNGA pentru jet."
+	$Root/HUD/Objective.text = "Mergi la restaurant și folosește terminalul de la tejghea." if is_hub else "Antrenament în dreapta: E pentru așezare · CLICK STÂNGA tragi · CLICK DREAPTA țintești precis."
+
+## fraction: 0..1, cat a mai ramas din rezerva de pipi a jucatorului.
+## Bara e verticala: se goleste de sus in jos (partea plina ramane jos).
+func set_fuel(fraction: float) -> void:
+	fuel_fill.anchor_top = 1.0 - clampf(fraction, 0.02, 1.0)
 
 func set_prompt(text: String) -> void:
 	$Root/HUD/Prompt.text = text

@@ -41,6 +41,7 @@ func _ready() -> void:
 	new_player.camera.make_current()
 
 	new_player.interactor.prompt_changed.connect(ui.set_prompt)
+	new_player.fuel_changed.connect(ui.set_fuel)
 	var station := get_node_or_null("MatchStation")
 	if station != null:
 		station.activated.connect(_on_station_activated)
