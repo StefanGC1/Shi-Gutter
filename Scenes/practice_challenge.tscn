@@ -42,12 +42,14 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
 theme_override_font_sizes/font_size = 20
-text = "ANTRENAMENT LIBER"
+text = "FREE PRACTICE"
 autowrap_mode = 2
 
 [node name="Details" type="Label" parent="Panel/Margin/Rows"]
 layout_mode = 2
 mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 17
-text = "R: începe runda"
+text = "R: start round"
 autowrap_mode = 2

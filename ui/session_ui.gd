@@ -11,21 +11,41 @@ signal main_menu_requested
 @onready var practice: Button = $Root/Overlay/Center/Card/Margin/Content/Practice
 @onready var multiplayer_button: Button = $Root/Overlay/Center/Card/Margin/Content/Multiplayer
 @onready var resume: Button = $Root/Overlay/Center/Card/Margin/Content/Resume
+@onready var options_button: Button = $Root/Overlay/Center/Card/Margin/Content/Options
 @onready var return_hub: Button = $Root/Overlay/Center/Card/Margin/Content/ReturnHub
 @onready var main_menu: Button = $Root/Overlay/Center/Card/Margin/Content/MainMenu
 @onready var fuel_fill: ColorRect = $Root/HUD/FuelBar/Fill
+@onready var options_overlay: Control = $Root/OptionsOverlay
 var _is_hub := false
 
 func _ready() -> void:
 	practice.pressed.connect(func(): practice_requested.emit())
 	resume.pressed.connect(func(): close_requested.emit())
+	options_button.pressed.connect(_on_options_pressed)
 	return_hub.pressed.connect(func(): hub_requested.emit())
 	main_menu.pressed.connect(func(): main_menu_requested.emit())
+	options_overlay.back_requested.connect(_on_options_back)
+
+func _on_options_pressed() -> void:
+	overlay.hide()
+	options_overlay.show()
+
+func _on_options_back() -> void:
+	close_options()
+
+## Public wrapper so callers (e.g. world_session's ESC handling) can back out
+## of the embedded options screen without resuming gameplay in one keypress.
+func close_options() -> void:
+	options_overlay.hide()
+	overlay.show()
+
+func is_options_open() -> bool:
+	return options_overlay.visible
 
 func configure(is_hub: bool) -> void:
 	_is_hub = is_hub
-	$Root/HUD/Location.text = "ULTIMA OPRIRE  /  HUB" if is_hub else "PLAYGROUND  /  MECI DE TEST"
-	$Root/HUD/Objective.text = "Mergi la restaurant și folosește terminalul de la tejghea." if is_hub else "Antrenament în dreapta: E pentru așezare · CLICK STÂNGA tragi · CLICK DREAPTA țintești precis."
+	$Root/HUD/Location.text = "LAST STOP  /  HUB" if is_hub else "PLAYGROUND  /  TEST MATCH"
+	$Root/HUD/Objective.text = "Go to the restaurant and use the terminal at the counter." if is_hub else "Training on the right: E to sit down · LEFT CLICK to shoot · RIGHT CLICK to aim precisely."
 
 ## fraction: 0..1, cat a mai ramas din rezerva de pipi a jucatorului.
 ## Bara e verticala: se goleste de sus in jos (partea plina ramane jos).
@@ -38,33 +58,37 @@ func set_prompt(text: String) -> void:
 
 func open_match_menu() -> void:
 	_open()
-	heading.text = "O MASĂ ÎNAINTE DE MECI"
-	details.text = "Antrenament local · 1 jucător\nHartă: Playground\n\nIntră pe harta de test. Multiplayer-ul nu este disponibil încă."
+	heading.text = "A MEAL BEFORE THE MATCH"
+	details.text = "Local practice · 1 player\nMap: Playground\n\nEnter the test map. Multiplayer isn't available yet."
 	practice.show()
 	multiplayer_button.show()
+	options_button.hide()
 	return_hub.hide()
 	main_menu.hide()
-	resume.text = "Înapoi la benzinărie"
+	resume.text = "Back to the gas station"
 	practice.grab_focus()
 
 func open_pause() -> void:
 	_open()
-	heading.text = "MENIU"
-	details.text = "Benzinăria te așteaptă." if _is_hub else "Poți continua testul sau te poți întoarce în hub."
+	heading.text = "MENU"
+	details.text = "The gas station is waiting." if _is_hub else "You can continue the test or head back to the hub."
 	practice.hide()
 	multiplayer_button.hide()
+	options_button.show()
 	return_hub.visible = not _is_hub
 	main_menu.show()
-	resume.text = "Continuă"
+	resume.text = "Continue"
 	resume.grab_focus()
 
 func _open() -> void:
 	overlay.show()
+	options_overlay.hide()
 	$Root/HUD/Crosshair.hide()
 	set_prompt("")
 
 func close_overlay() -> void:
 	overlay.hide()
+	options_overlay.hide()
 	$Root/HUD/Crosshair.show()
 
 func show_error(text: String) -> void:

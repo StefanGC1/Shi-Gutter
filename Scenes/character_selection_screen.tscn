@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://wksfpkk07fso"]
 
 [ext_resource type="Script" uid="uid://6ba0w073t6bu" path="res://Scenes/character_selection_screen.gd" id="1_nbj1f"]
-[ext_resource type="Texture2D" uid="uid://bgtrbgidmgba8" path="res://assets/images/OmVerdeUnlocked.png" id="1_ojdrq"]
-[ext_resource type="Texture2D" uid="uid://bgyfmnnm68s1p" path="res://assets/images/OmAlbastruUnlocked.png" id="2_mmnth"]
+[ext_resource type="Texture2D" uid="uid://do77mlh0lgdy0" path="res://assets/images/OmVerdeUnlocked.png" id="1_ojdrq"]
+[ext_resource type="Texture2D" uid="uid://bee4xbp3i1h66" path="res://assets/images/OmAlbastruUnlocked.png" id="2_mmnth"]
 [ext_resource type="Script" uid="uid://b8hgijcrmu46o" path="res://Scenes/button_script.gd" id="2_q0jmq"]
-[ext_resource type="Texture2D" uid="uid://bwcxepx51vb1g" path="res://assets/images/OmMovUnlocked.png" id="3_q0jmq"]
+[ext_resource type="Texture2D" uid="uid://bcjft06riblse" path="res://assets/images/OmMovUnlocked.png" id="3_q0jmq"]
 [ext_resource type="Texture2D" uid="uid://dsdev28a68l3t" path="res://assets/images/OmAlbastruLocked.png" id="5_e76wu"]
 
 [sub_resource type="FontVariation" id="FontVariation_ojdrq"]

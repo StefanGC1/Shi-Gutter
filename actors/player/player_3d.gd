@@ -131,7 +131,7 @@ func _physics_process(delta: float) -> void:
 
 func set_controls_enabled(value: bool) -> void:
 	controls_enabled = value
-	interactor.prompt_override = "[E] Ridică-te  ·  CLICK STÂNGA: tragi (random fără țintă)  ·  CLICK DREAPTA: țintești precis" if value and is_seated() else ""
+	interactor.prompt_override = "[E] Stand up  ·  LEFT CLICK: shoot (random, no aim)  ·  RIGHT CLICK: aim precisely" if value and is_seated() else ""
 	interactor.set_interaction_enabled(value and not is_seated())
 	if not value:
 		_shoot_requested = false
@@ -215,7 +215,7 @@ func stand_up() -> bool:
 			_leave_seat()
 			global_transform = candidate
 			return true
-	interactor.prompt_override = "Ieșirea este blocată. Eliberează locul și apasă E."
+	interactor.prompt_override = "The exit is blocked. Clear the spot and press E."
 	interactor.refresh_target()
 	return false
 

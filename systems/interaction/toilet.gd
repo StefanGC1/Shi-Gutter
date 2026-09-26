@@ -28,7 +28,7 @@ func release(actor: Node) -> void:
 		remove_meta(&"occupied_by")
 
 func get_interaction_prompt() -> String:
-	return "Toaletă ocupată" if occupant() != null else "Așază-te pe toaletă"
+	return "Toilet occupied" if occupant() != null else "Sit on the toilet"
 
 func interact(actor: CharacterBody3D) -> void:
 	if actor.has_method("try_sit"):

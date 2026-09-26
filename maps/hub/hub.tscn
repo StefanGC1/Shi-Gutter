@@ -257,7 +257,7 @@ material = SubResource("Rust")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45, -6.84)
 pixel_size = 0.0085
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "LA ULTIMA MASA"
+text = "THE LAST MEAL"
 font_size = 86
 outline_size = 6
 
@@ -335,8 +335,8 @@ material = SubResource("Dark")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -15.68)
 pixel_size = 0.0065
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "MENIUL ZILEI
-MICI  /  FASOLE  /  CURAJ"
+text = "TODAY'S SPECIAL
+MICI  /  BEANS  /  COURAGE"
 font_size = 52
 outline_size = 6
 
@@ -433,7 +433,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.4, 4.025)
 pixel_size = 0.006
 modulate = Color(0.96, 0.84, 0.6, 1)
 text = "RESTAURANT
-MECI DE TEST  ↑"
+TEST MATCH  ↑"
 font_size = 50
 outline_size = 6
 
@@ -470,7 +470,7 @@ material = SubResource("Gold")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 4.32, 6.12)
 pixel_size = 0.007
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "ULTIMA OPRIRE"
+text = "LAST STOP"
 font_size = 60
 outline_size = 6
 
@@ -651,7 +651,7 @@ material = SubResource("Teal")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2.9, -7.34)
 pixel_size = 0.008
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "TOALETE"
+text = "RESTROOMS"
 font_size = 68
 outline_size = 6
 
@@ -705,8 +705,8 @@ material = SubResource("Teal")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 5.45, 10.15)
 pixel_size = 0.007
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "ULTIMA
-OPRIRE"
+text = "LAST
+STOP"
 font_size = 66
 outline_size = 6
 
@@ -722,7 +722,7 @@ outline_size = 6
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -10.18)
 collision_layer = 5
 script = ExtResource("4_interactable")
-prompt = "Deschide meniul de meci"
+prompt = "Open the match menu"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MatchStation" unique_id=1333838830]
 shape = SubResource("StationShape")
@@ -739,7 +739,7 @@ material = SubResource("Screen")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.15)
 pixel_size = 0.0043
 modulate = Color(0.03, 0.1, 0.065, 1)
-text = "MECI
+text = "MATCH
 [E]"
 font_size = 58
 outline_size = 6
@@ -747,7 +747,7 @@ outline_size = 6
 [node name="StationSign" type="Label3D" parent="MatchStation" unique_id=1282435698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73, 0)
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "COMANDA AICI"
+text = "ORDER HERE"
 font_size = 40
 outline_size = 6
 
@@ -761,7 +761,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.5, 0.27, -12.8)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.55, 6)
 collision_layer = 5
 script = ExtResource("4_interactable")
-prompt = "Alege personajul"
+prompt = "Choose character"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterStation" unique_id=2083521122]
 shape = SubResource("StationShape")
@@ -778,7 +778,7 @@ material = SubResource("Light")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.15)
 pixel_size = 0.0035
 modulate = Color(0.03, 0.1, 0.065, 1)
-text = "PERSONAJ
+text = "CHARACTER
 [E]"
 font_size = 46
 outline_size = 0
@@ -793,7 +793,7 @@ material = SubResource("Teal")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 pixel_size = 0.006
 modulate = Color(0.96, 0.84, 0.6, 1)
-text = "SCHIMBĂ PERSONAJUL"
+text = "CHANGE CHARACTER"
 font_size = 40
 outline_size = 6
 

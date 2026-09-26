@@ -129,9 +129,9 @@ pee_origin = Vector3(0, 0.32, 0.35)
 [node name="PracticeSign" type="Label3D" parent="." unique_id=939560473]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.7, 1.9, 3)
 billboard = 1
-text = "TOALETĂ DE ANTRENAMENT
-E: așază-te / ridică-te · R: rundă 30 s
-CLICK STÂNGA: tragi (random fără țintă) · CLICK DREAPTA: țintești precis"
+text = "TRAINING TOILET
+E: sit down / stand up · R: 30s round
+LEFT CLICK: shoot (random, no aim) · RIGHT CLICK: aim precisely"
 font_size = 38
 outline_size = 8
 
