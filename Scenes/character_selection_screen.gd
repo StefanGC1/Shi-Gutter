@@ -7,6 +7,7 @@ var transitioning := false
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	MusicPlayer.play("lobby")
 	match Data.SelectPlayer:
 		Data.SelectedCharacter.BLUE_PLAYER:
 			$HBoxContainer/ButtonBlue.grab_focus()
@@ -35,7 +36,7 @@ func _on_button_purple_pressed() -> void:
 func _select_character(character: Data.SelectedCharacter) -> void:
 	if transitioning:
 		return
-	var previous_character := Data.SelectPlayer
+	var previous_character: Data.SelectedCharacter = Data.SelectPlayer
 	Data.SelectPlayer = character
 	if not _travel_to(HUB):
 		Data.SelectPlayer = previous_character
