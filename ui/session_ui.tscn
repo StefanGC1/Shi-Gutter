@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://brosiwrdte5t6" path="res://ui/session_ui.gd" id="1"]
 [ext_resource type="Theme" uid="uid://b41jb6yv0yewc" path="res://ui/hub_theme.tres" id="2"]
+[ext_resource type="PackedScene" uid="uid://dinnj533r2ohh" path="res://menus/main_menu/options_menu.tscn" id="3"]
 
 [node name="SessionUI" type="CanvasLayer" unique_id=498772318]
 script = ExtResource("1")
@@ -35,7 +36,7 @@ theme_override_colors/font_color = Color(1, 0.77, 0.35, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 24
-text = "ULTIMA OPRIRE / HUB"
+text = "LAST STOP / HUB"
 
 [node name="Objective" type="Label" parent="Root/HUD" unique_id=1027944344]
 layout_mode = 0
@@ -45,7 +46,7 @@ offset_right = 950.0
 offset_bottom = 92.0
 theme_override_colors/font_outline_color = Color(0.04, 0.06, 0.06, 1)
 theme_override_constants/outline_size = 4
-text = "Mergi la restaurant."
+text = "Go to the restaurant."
 
 [node name="Controls" type="Label" parent="Root/HUD" unique_id=570042246]
 layout_mode = 0
@@ -58,7 +59,7 @@ offset_bottom = -16.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 16
-text = "WASD / SĂGEȚI · Mișcare     MOUSE · Privire     SPACE · Săritură\nE · Interacțiune     H · Alege personajul     ESC · Meniu"
+text = "WASD / ARROWS · Move     MOUSE · Look     SPACE · Jump\nE · Interact     H · Choose character     ESC · Menu"
 
 [node name="FuelBar" type="Control" parent="Root/HUD" unique_id=812934501]
 layout_mode = 0
@@ -179,41 +180,54 @@ theme_override_constants/separation = 16
 layout_mode = 2
 theme_override_colors/font_color = Color(0.97, 0.72, 0.32, 1)
 theme_override_font_sizes/font_size = 15
-text = "KM 13  /  ULTIMA OPRIRE"
+text = "KM 13  /  LAST STOP"
 
 [node name="Heading" type="Label" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=1457850859]
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
-text = "MENIU"
+text = "MENU"
 
 [node name="Details" type="Label" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=495822458]
 custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
-text = "Antrenament local"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Local practice"
 autowrap_mode = 2
 
 [node name="Practice" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=1359069060]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
-text = "Pornește meci de test"
+text = "Start test match"
 
 [node name="Multiplayer" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=724081742]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 disabled = true
-text = "Multiplayer — în curând"
+text = "Multiplayer — coming soon"
 
 [node name="Resume" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=587752330]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
-text = "Continuă"
+text = "Continue"
+
+[node name="Options" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=2145178203]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "OPTIONS"
 
 [node name="ReturnHub" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=86459287]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
-text = "Înapoi în hub"
+text = "Back to hub"
 
 [node name="MainMenu" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=2091430407]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
-text = "Meniu principal"
+text = "Main menu"
+
+[node name="OptionsOverlay" parent="Root" instance=ExtResource("3")]
+visible = false
+embedded_mode = true

@@ -92,17 +92,17 @@ func _finish_round(completed: bool) -> void:
 	running = false
 	if completed:
 		best_score = maxi(best_score, score)
-		_result = "RUNDĂ TERMINATĂ · %d puncte" % score
+		_result = "ROUND FINISHED · %d points" % score
 	else:
-		_result = "RUNDĂ ANULATĂ · ai părăsit toaleta"
+		_result = "ROUND CANCELLED · you left the toilet"
 	for target in targets:
 		target.show_free_practice()
 	_update_hud()
 
 func _update_hud() -> void:
 	if running:
-		status.text = "%02d s  ·  SCOR %d" % [ceili(time_left), score]
-		details.text = "Ținta galbenă: %d/%d lovituri\n+10 puncte / țintă · E: abandonează\nRecord pe această hartă: %d" % [target_hits, hits_per_target, best_score]
+		status.text = "%02d s  ·  SCORE %d" % [ceili(time_left), score]
+		details.text = "Yellow target: %d/%d hits\n+10 points / target · E: quit\nBest score on this map: %d" % [target_hits, hits_per_target, best_score]
 	else:
-		status.text = _result if not _result.is_empty() else "ANTRENAMENT LIBER"
-		details.text = "R: rundă de %d secunde\nLovește doar ținta galbenă de %d ori.\nRecord pe această hartă: %d" % [round_seconds, hits_per_target, best_score]
+		status.text = _result if not _result.is_empty() else "FREE PRACTICE"
+		details.text = "R: %d-second round\nHit only the yellow target %d times.\nBest score on this map: %d" % [round_seconds, hits_per_target, best_score]

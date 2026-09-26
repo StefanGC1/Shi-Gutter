@@ -47,7 +47,7 @@ func run() -> void:
 		check_bone_animation(player)
 		check(toilet.occupant() == null, "Training toilet must initially be free")
 		check(npc._toilet.occupant() == npc, "NPC must reserve its toilet")
-		check("ocupată" in npc._toilet.get_interaction_prompt(), "Reserved toilet must show occupied")
+		check("occupied" in npc._toilet.get_interaction_prompt(), "Reserved toilet must show occupied")
 		check(not player.try_sit(npc._toilet), "Player cannot steal an NPC's toilet")
 		await shoot_for(10)
 		check(player.pee_stream._drops.is_empty(), "Shooting while standing must do nothing")

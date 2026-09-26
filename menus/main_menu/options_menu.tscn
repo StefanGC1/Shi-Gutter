@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bdo2fiy4yiup2"]
+[gd_scene format=3 uid="uid://dinnj533r2ohh"]
 
-[ext_resource type="Script" uid="uid://bdo0grhym6sey" path="res://menus/main_menu/main_menu.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dp4ns0x5i33bn" path="res://menus/main_menu/options_menu.gd" id="1_v0o21"]
 
 [sub_resource type="StyleBoxFlat" id="MenuPanelStyle"]
 bg_color = Color(0.055, 0.075, 0.12, 0.94)
@@ -17,12 +17,12 @@ shadow_color = Color(0, 0, 0, 0.45)
 shadow_size = 18
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
-bg_color = Color(0.09, 0.12, 0.19, 1)
+bg_color = Color(0.16, 0.19, 0.26, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.18, 0.55, 0.78, 0.6)
+border_color = Color(0.4, 0.62, 0.85, 0.55)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -31,26 +31,13 @@ shadow_color = Color(0, 0, 0, 0.35)
 shadow_size = 6
 shadow_offset = Vector2(0, 3)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbn2l"]
-bg_color = Color(0.22, 0.13, 0.05, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.76, 0.33, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_size = 2
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1nwmw"]
-bg_color = Color(0.36, 0.22, 0.08, 1)
+bg_color = Color(0.22, 0.27, 0.38, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.85, 0.6, 0.35, 0.85)
+border_color = Color(0.55, 0.8, 1, 0.9)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -58,6 +45,19 @@ corner_radius_bottom_left = 10
 shadow_color = Color(0, 0, 0, 0.4)
 shadow_size = 10
 shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbn2l"]
+bg_color = Color(0.1, 0.12, 0.17, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.76, 0.33, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
 bg_color = Color(0, 0, 0, 0)
@@ -71,26 +71,14 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_disabled"]
-bg_color = Color(0.15, 0.12, 0.1, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.4, 0.32, 0.22, 0.5)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[node name="MainMenu" type="Control" unique_id=1669914054]
+[node name="OptionsMenu" type="Control" unique_id=1669914054]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_script")
+script = ExtResource("1_v0o21")
 
 [node name="Background" type="ColorRect" parent="." unique_id=1639004448]
 layout_mode = 1
@@ -140,7 +128,7 @@ theme_override_colors/font_color = Color(0.55, 0.87, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 58
-text = "SHIT GUTTER"
+text = "OPTIONS"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/MenuPanel/Margin/VBox" unique_id=1569457233]
@@ -155,7 +143,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
-[node name="Singleplayer" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=2098441139]
+[node name="DisplayModeOption" type="OptionButton" parent="Center/MenuPanel/Margin/VBox" unique_id=1056202420]
 custom_minimum_size = Vector2(390, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
@@ -163,18 +151,8 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_xbn2l")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1nwmw")
 theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
-text = "SINGLEPLAYER"
 
-[node name="Multiplayer" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=1051185125]
-custom_minimum_size = Vector2(390, 72)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.58, 0.62, 0.68, 1)
-theme_override_font_sizes/font_size = 25
-theme_override_styles/disabled = SubResource("StyleBoxFlat_disabled")
-disabled = true
-text = "MULTIPLAYER"
-
-[node name="OptionsButton" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=1188551530]
+[node name="ResolutionOption" type="OptionButton" parent="Center/MenuPanel/Margin/VBox" unique_id=646554660]
 custom_minimum_size = Vector2(390, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
@@ -182,15 +160,19 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_xbn2l")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1nwmw")
 theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
-text = "OPTIONS"
+
+[node name="BackButton" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=1188551530]
+custom_minimum_size = Vector2(390, 72)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xbn2l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1nwmw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+text = "BACK"
 
 [node name="ComingSoon" type="Label" parent="Center/MenuPanel/Margin/VBox" unique_id=596056575]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.5, 0.58, 1)
 theme_override_font_sizes/font_size = 15
-text = "MULTIPLAYER SOON"
 horizontal_alignment = 1
-
-[connection signal="pressed" from="Center/MenuPanel/Margin/VBox/Singleplayer" to="." method="_on_singleplayer_pressed"]
-[connection signal="pressed" from="Center/MenuPanel/Margin/VBox/Multiplayer" to="." method="_on_multiplayer_pressed"]
-[connection signal="pressed" from="Center/MenuPanel/Margin/VBox/OptionsButton" to="." method="_on_options_button_pressed"]

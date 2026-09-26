@@ -2,7 +2,7 @@ extends StaticBody3D
 
 signal activated(player: CharacterBody3D)
 
-@export var prompt := "Interacționează"
+@export var prompt := "Interact"
 
 func get_interaction_prompt() -> String:
 	return prompt

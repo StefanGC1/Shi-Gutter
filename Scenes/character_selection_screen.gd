@@ -48,7 +48,7 @@ func _travel_to(path: String) -> bool:
 	var error := get_tree().change_scene_to_file(path)
 	if error != OK:
 		transitioning = false
-		$Label.text = "Scena nu s-a putut deschide. Încearcă din nou."
+		$Label.text = "The scene couldn't be loaded. Please try again."
 		push_error("Cannot load scene: %s (error %s)" % [path, error])
 		return false
 	return true

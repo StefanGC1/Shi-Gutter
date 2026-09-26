@@ -60,6 +60,8 @@ func _input(event: InputEvent) -> void:
 			mode = Mode.PAUSED
 			new_player.set_controls_enabled(false)
 			ui.open_pause()
+		elif ui.is_options_open():
+			ui.close_options()
 		else:
 			close_overlay()
 
@@ -91,7 +93,7 @@ func travel_to(path: String) -> void:
 	if error != OK:
 		mode = Mode.PAUSED
 		ui.open_pause()
-		ui.show_error("Scena nu s-a putut deschide. Poți reveni la joc.")
+		ui.show_error("The scene couldn't be loaded. You can return to the game.")
 		push_error("Cannot load scene: %s (error %s)" % [path, error])
 
 func _unhandled_input(event: InputEvent) -> void:

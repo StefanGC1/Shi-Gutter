@@ -63,7 +63,7 @@ func open_character_station() -> void:
 	await frames(8)
 	check(current_scene == hub, "Proximity must not automatically open character selection")
 	check(player.interactor.target == hub.get_node("CharacterStation"), "Character station is not reachable")
-	check(hub.ui.get_node("Root/HUD/Prompt").text == "[E]  Alege personajul", "Character station needs its own interaction prompt")
+	check(hub.ui.get_node("Root/HUD/Prompt").text == "[E]  Choose character", "Character station needs its own interaction prompt")
 	await press("ui_cancel")
 	await press("interact")
 	check(current_scene == hub and hub.mode == hub.Mode.PAUSED, "Paused interaction must not open the selector")
