@@ -18,6 +18,9 @@ var purple_player: PackedScene = preload("res://actors/player/player_purple_man.
 var new_player: Player3D
 
 func _ready() -> void:
+	if not is_hub:
+		MusicPlayer.play("game")
+
 	ui.configure(is_hub)
 	ui.close_requested.connect(close_overlay)
 	ui.practice_requested.connect(func(): travel_to(PRACTICE))

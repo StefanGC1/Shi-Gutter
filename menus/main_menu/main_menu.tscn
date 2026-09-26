@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://bdo2fiy4yiup2"]
 
-[ext_resource type="Script" path="res://menus/main_menu/main_menu.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bdo0grhym6sey" path="res://menus/main_menu/main_menu.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="MenuPanelStyle"]
 bg_color = Color(0.055, 0.075, 0.12, 0.94)
@@ -16,7 +16,28 @@ corner_radius_bottom_left = 18
 shadow_color = Color(0, 0, 0, 0.45)
 shadow_size = 18
 
-[node name="MainMenu" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
+bg_color = Color(0.26, 0.27, 0.32, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.48, 0.55, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbn2l"]
+bg_color = Color(0.2901961, 0.18039216, 0.11764706, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1nwmw"]
+bg_color = Color(0.23137255, 0.14117648, 0.09019608, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vu5tu"]
+bg_color = Color(0.23137255, 0.14117648, 0.09019608, 1)
+
+[node name="MainMenu" type="Control" unique_id=1669914054]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,24 +46,24 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1639004448]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.018, 0.035, 0.075, 1)
+color = Color(0.54509807, 0.3529412, 0.16862746, 1)
 
-[node name="AccentTop" type="ColorRect" parent="."]
+[node name="AccentTop" type="ColorRect" parent="." unique_id=143636943]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 8.0
 grow_horizontal = 2
-color = Color(0.12, 0.62, 0.9, 1)
+color = Color(0.54509807, 0.3529412, 0.16862746, 1)
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Center" type="CenterContainer" parent="." unique_id=1526111251]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,24 +71,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MenuPanel" type="PanelContainer" parent="Center"]
+[node name="MenuPanel" type="PanelContainer" parent="Center" unique_id=1832777324]
 custom_minimum_size = Vector2(560, 490)
 layout_mode = 2
 theme_override_styles/panel = SubResource("MenuPanelStyle")
 
-[node name="Margin" type="MarginContainer" parent="Center/MenuPanel"]
+[node name="Margin" type="MarginContainer" parent="Center/MenuPanel" unique_id=1037344250]
 layout_mode = 2
 theme_override_constants/margin_left = 58
 theme_override_constants/margin_top = 48
 theme_override_constants/margin_right = 58
 theme_override_constants/margin_bottom = 48
 
-[node name="VBox" type="VBoxContainer" parent="Center/MenuPanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Center/MenuPanel/Margin" unique_id=309308831]
 layout_mode = 2
 theme_override_constants/separation = 18
 alignment = 1
 
-[node name="Title" type="Label" parent="Center/MenuPanel/Margin/VBox"]
+[node name="Title" type="Label" parent="Center/MenuPanel/Margin/VBox" unique_id=893839318]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.87, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
@@ -76,36 +97,41 @@ theme_override_font_sizes/font_size = 58
 text = "SHIT GUTTER"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="Center/MenuPanel/Margin/VBox"]
+[node name="Subtitle" type="Label" parent="Center/MenuPanel/Margin/VBox" unique_id=1569457233]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.7, 0.78, 1)
 theme_override_font_sizes/font_size = 18
-text = "Următoarea oprire: benzinăria"
+text = "NEXT STOP
+GAS STATION"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="Center/MenuPanel/Margin/VBox"]
+[node name="Spacer" type="Control" parent="Center/MenuPanel/Margin/VBox" unique_id=348233135]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
-[node name="Singleplayer" type="Button" parent="Center/MenuPanel/Margin/VBox"]
+[node name="Singleplayer" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=2098441139]
 custom_minimum_size = Vector2(390, 72)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xbn2l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1nwmw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_normal")
 text = "SINGLEPLAYER"
 
-[node name="Multiplayer" type="Button" parent="Center/MenuPanel/Margin/VBox"]
+[node name="Multiplayer" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=1051185125]
 custom_minimum_size = Vector2(390, 72)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.58, 0.62, 0.68, 1)
 theme_override_font_sizes/font_size = 25
-text = "MULTIPLAYER"
 disabled = true
+text = "MULTIPLAYER"
 
-[node name="ComingSoon" type="Label" parent="Center/MenuPanel/Margin/VBox"]
+[node name="ComingSoon" type="Label" parent="Center/MenuPanel/Margin/VBox" unique_id=596056575]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.5, 0.58, 1)
 theme_override_font_sizes/font_size = 15
-text = "Multiplayer va fi disponibil ulterior"
+text = "MULTIPLAYER SOON"
 horizontal_alignment = 1
 
 [connection signal="pressed" from="Center/MenuPanel/Margin/VBox/Singleplayer" to="." method="_on_singleplayer_pressed"]
