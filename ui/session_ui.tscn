@@ -197,6 +197,12 @@ theme_override_constants/outline_size = 3
 text = "Local practice"
 autowrap_mode = 2
 
+[node name="MapPicker" type="OptionButton" parent="Root/Overlay/Center/Card/Margin/Content"]
+visible = false
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+tooltip_text = "Choose a local map"
+
 [node name="Practice" type="Button" parent="Root/Overlay/Center/Card/Margin/Content" unique_id=1359069060]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2

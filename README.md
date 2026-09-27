@@ -11,8 +11,9 @@ Godot 4.6 first-person prototype. The current flow is:
 4. Press **F5**, then **Singleplayer**, and pick a character to enter the hub.
 5. Follow the yellow markers to the **The Last Meal** restaurant.
 6. Look at the green terminal at the counter, from no more than 2.8 meters, and press **E**.
-7. Choose **Start test match**. You'll land in the playground.
-8. From the playground, **Escape → Back to hub**.
+7. Choose a map at the terminal, then **Start test match**. Playground is the
+   default; **CFR / Night carriage** and **Vlad Tepes / After hours** are also available.
+8. From any local map, **Escape → Back to hub**.
 
 The project uses Forward+ with Direct3D 12 on Windows and Jolt Physics.
 To run an individual scene, open it and press **F6**.
@@ -76,7 +77,7 @@ it can be moved or swapped for final models in the editor.
 
 Getting close to the restaurant doesn't start anything automatically. The
 terminal has to be looked at up close and activated with E. The menu shows
-local practice, the Playground map, a player count and a confirm button.
+local practice, a map selector, a player count and a confirm button.
 Multiplayer is explicitly disabled: **there's no server, matchmaking queue,
 network lobby or online match yet**. The hub is local-only at this stage.
 
@@ -204,6 +205,31 @@ This is local gameplay only; reservations and hits aren't networked.
   first-run values and re-saves immediately — no manual save-file deletion
   needed.
 
+## Restored story-map prototypes
+
+- **CFR / Night carriage** (`maps/cfr_train/cfr_train.tscn`): a filthy stationary
+  carriage with benches, luggage racks, stained windows/walls/ceiling, glowing
+  grime and exactly two usable toilets facing each other.
+- **Vlad Tepes / After hours** (`maps/vlad_tepes/vlad_tepes.tscn`): a fictional
+  run-down school with a courtyard, corridor, classroom and three usable toilets.
+  The ground floor is accessible; the upper floor is exterior scenery only.
+
+Both maps reuse the selected character, existing controls, fuel and session
+menus. They can also be opened directly with F6. `GepetoSpawn`/`DuelCenter` in
+the train and `ErecSpawn`/`ClassroomEncounter` in the school are integration
+markers, not active NPCs or missions. Architecture and set dressing are editable
+scene nodes. The existing health/damage, saved settings and death-to-hub flow
+are preserved; restoring maps does not revert those systems.
+
+`systems/map_catalog.gd` supplies the terminal's map list. Materials use
+`maps/shared/weathered.gdshader` without new external assets. The optional offline
+builder is `tools/build_story_maps.gd`. **Regeneration overwrites both map scenes**,
+including manual edits; it is not needed to play:
+
+```text
+godot --headless --path . --script res://tools/build_story_maps.gd -- --rebuild-story-maps
+```
+
 ## Structure
 
 ```text
@@ -216,6 +242,9 @@ Sigletons/data.gd     Data autoload: selected character, display settings and
                       practice best scores, all persisted to user://save.cfg
 maps/hub/            The gas station
 maps/playground/     Test match map
+maps/cfr_train/      CFR carriage prototype
+maps/vlad_tepes/     Fictional school prototype
+maps/shared/         Shared procedural materials
 maps/test_3d/        Initial scene
 menus/main_menu/     Game entry point
 systems/interaction/ Shared detection/contract for interactions
@@ -234,6 +263,7 @@ After importing the project in the editor, run these from the repository root
 godot --headless --path . --script res://tests/hub_flow_test.gd --log-file .godot/hub-test.log
 godot --headless --path . --script res://tests/toilet_flow_test.gd --log-file .godot/toilet-test.log
 godot --headless --path . --script res://tests/practice_challenge_test.gd --log-file .godot/practice-test.log
+godot --headless --path . --script res://tests/story_maps_test.gd --log-file .godot/story-test.log
 ```
 
 The first test checks the menu → selector → hub → playground → hub → menu
@@ -252,6 +282,10 @@ resuming, cancelling and scene changes. That test resets `Data.best_scores` in
 memory before it runs so leftover save data can't affect its assertions —
 but any score it records during the run is still written to your real
 `user://save.cfg`, the same way a normal play session would.
+
+`STORY_MAPS_OK` checks both restored maps with all three characters, terminal
+selection, walking routes, toilet orientation/interaction, collisions, options
+and returning to the hub, including the current death-handling connection.
 
 ## Assets
 
