@@ -161,6 +161,16 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_xbn2l")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1nwmw")
 theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
 
+[node name="ResetButton" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=1188551531]
+custom_minimum_size = Vector2(390, 72)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xbn2l")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1nwmw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+text = "RESET TO DEFAULTS"
+
 [node name="BackButton" type="Button" parent="Center/MenuPanel/Margin/VBox" unique_id=1188551530]
 custom_minimum_size = Vector2(390, 72)
 layout_mode = 2
@@ -175,4 +185,11 @@ text = "BACK"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.5, 0.58, 1)
 theme_override_font_sizes/font_size = 15
+
+[node name="ResetConfirmDialog" type="ConfirmationDialog" parent="."]
+title = "Reset to defaults?"
+initial_position = 1
+size = Vector2i(420, 140)
+dialog_text = "This resets your character choice, display settings, and practice best scores back to first-run defaults. This can't be undone."
+ok_button_text = "Reset"
 horizontal_alignment = 1

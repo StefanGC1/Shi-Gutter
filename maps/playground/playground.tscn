@@ -147,5 +147,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 1, -3)
 [node name="PracticeChallenge" parent="." unique_id=632862821 instance=ExtResource("9_challenge")]
 toilet_path = NodePath("../PracticeToilet")
 target_paths = Array[NodePath]([NodePath("../PeeTarget"), NodePath("../PeeTargetMiddle"), NodePath("../PeeTargetRight")])
+enemy_path = NodePath("../NpcPeeDuel")
 
 [node name="HealthBarHud" parent="." unique_id=60423207 instance=ExtResource("6_42lni")]

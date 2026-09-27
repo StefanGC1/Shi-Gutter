@@ -5,8 +5,6 @@ signal practice_requested
 signal hub_requested
 signal main_menu_requested
 
-const MapCatalog = preload("res://systems/map_catalog.gd")
-@onready var map_picker: OptionButton = $Root/Overlay/Center/Card/Margin/Content/MapPicker
 @onready var overlay: Control = $Root/Overlay
 @onready var heading: Label = $Root/Overlay/Center/Card/Margin/Content/Heading
 @onready var details: Label = $Root/Overlay/Center/Card/Margin/Content/Details
@@ -21,9 +19,6 @@ const MapCatalog = preload("res://systems/map_catalog.gd")
 var _is_hub := false
 
 func _ready() -> void:
-	for entry in MapCatalog.MAPS:
-		map_picker.add_item(entry.title)
-	map_picker.item_selected.connect(func(_index): _update_map_description())
 	practice.pressed.connect(func(): practice_requested.emit())
 	resume.pressed.connect(func(): close_requested.emit())
 	options_button.pressed.connect(_on_options_pressed)
@@ -61,22 +56,10 @@ func set_prompt(text: String) -> void:
 	$Root/HUD/Prompt.text = text
 	$Root/HUD/Prompt.visible = not text.is_empty()
 
-func set_map_details(title: String, objective: String) -> void:
-	$Root/HUD/Location.text = title
-	$Root/HUD/Objective.text = objective
-
-func selected_map_path() -> String:
-	return MapCatalog.MAPS[clampi(map_picker.selected, 0, MapCatalog.MAPS.size() - 1)].path
-
-func _update_map_description() -> void:
-	var entry: Dictionary = MapCatalog.MAPS[clampi(map_picker.selected, 0, MapCatalog.MAPS.size() - 1)]
-	details.text = "Local practice · 1 player\n%s\nMultiplayer isn't available yet." % entry.description
-
 func open_match_menu() -> void:
 	_open()
 	heading.text = "A MEAL BEFORE THE MATCH"
-	_update_map_description()
-	map_picker.show()
+	details.text = "Local practice · 1 player\nMap: Playground\n\nEnter the test map. Multiplayer isn't available yet."
 	practice.show()
 	multiplayer_button.show()
 	options_button.hide()
@@ -87,7 +70,6 @@ func open_match_menu() -> void:
 
 func open_pause() -> void:
 	_open()
-	map_picker.hide()
 	heading.text = "MENU"
 	details.text = "The gas station is waiting." if _is_hub else "You can continue the test or head back to the hub."
 	practice.hide()

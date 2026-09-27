@@ -8,13 +8,23 @@ var transitioning := false
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	MusicPlayer.play("lobby")
+	var selected_button: TextureButton
 	match Data.SelectPlayer:
 		Data.SelectedCharacter.BLUE_PLAYER:
-			$HBoxContainer/ButtonBlue.grab_focus()
+			selected_button = $HBoxContainer/ButtonBlueFrame/ButtonBlue
 		Data.SelectedCharacter.PURPLE_PLAYER:
-			$HBoxContainer/ButtonPurple.grab_focus()
+			selected_button = $HBoxContainer/ButtonPurpleFrame/ButtonPurple
 		_:
-			$HBoxContainer/ButtonGreen.grab_focus()
+			selected_button = $HBoxContainer/ButtonGreenFrame/ButtonGreen
+
+	# Keep the saved character selected for keyboard navigation, but do not
+	# leave its hover/focus scale permanently enlarged when the screen opens.
+	selected_button.grab_focus()
+	call_deferred("_clear_initial_character_focus", selected_button)
+
+func _clear_initial_character_focus(button: TextureButton) -> void:
+	if is_instance_valid(button):
+		button.release_focus()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -37,9 +47,9 @@ func _select_character(character: Data.SelectedCharacter) -> void:
 	if transitioning:
 		return
 	var previous_character: Data.SelectedCharacter = Data.SelectPlayer
-	Data.SelectPlayer = character
+	Data.set_selected_character(character)
 	if not _travel_to(HUB):
-		Data.SelectPlayer = previous_character
+		Data.set_selected_character(previous_character)
 
 func _travel_to(path: String) -> bool:
 	if transitioning:

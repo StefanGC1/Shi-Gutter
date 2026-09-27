@@ -12,12 +12,14 @@ func show_challenge(active: bool, progress: int, required: int) -> void:
 	_in_challenge = true
 	_active = active
 	_material.albedo_color = Color(1, 0.75, 0.1) if active else Color(0.22, 0.25, 0.28)
+	$Label.modulate = Color(0.20, 1.0, 0.35) if active else Color(0.75, 0.78, 0.82)
 	$Label.text = "AIM HERE · %d/%d" % [progress, required] if active else "WAIT"
 
 func show_free_practice() -> void:
 	_in_challenge = false
 	_active = false
 	_material.albedo_color = Color(0.1, 0.55, 0.55)
+	$Label.modulate = Color(1, 1, 1)
 	$Label.text = "HITS: %d" % hits
 
 func _ready() -> void:

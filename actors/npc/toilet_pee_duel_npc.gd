@@ -26,6 +26,9 @@ const PeeStream = preload("res://systems/pee_stream.gd")
 @export_range(0.0, 1.0) var hit_chance := 0.5
 ## Pozitia locala de unde "pleaca" jetul (aprox in zona pulii, nu la sold).
 @export var pee_origin := Vector3(0.0, 0.32, 0.35)
+## HP-ul acestui adversar de duel. La 0, se reincarca automat la maxim -
+## e un duel de antrenament (bucla nesfarsita), nu un meci cu game-over.
+@export var max_health := 300.0
 
 var _pee_stream: Node3D
 var _player: Node3D
@@ -36,6 +39,136 @@ var _fuel := PeeFuel.new()
 ## Cat timp e true, NPC-ul incearca sa traga; cand ramane fara fuel se opreste
 ## (AFK) pana se reincarca 100%, apoi reincepe - la nesfarsit, cat dureaza duelul.
 var _npc_wants_to_fire := true
+## HP-ul adversarului (vezi PeeDamage: 1 HP la fiecare 0.1s de expunere continua).
+var _damage: PeeDamage
+var _hp_label: Label3D
+var _hp_bar_bg: MeshInstance3D
+var _hp_bar_fill: MeshInstance3D
+var _hp_bar_value: Label3D
+var _challenge_hidden := false
+var _challenge_hidden_toilet: Node3D = null
+var _defeated := false
+var _respawn_transform := Transform3D.IDENTITY
+const HP_BAR_WIDTH := 2.8
+const HP_BAR_HEIGHT := 0.28
+
+func _ready() -> void:
+	super._ready()
+	_respawn_transform = global_transform
+	add_to_group(&"practice_duel_enemy")
+	_damage = PeeDamage.new(max_health)
+	_hp_label = Label3D.new()
+	_hp_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_hp_label.font_size = 34
+	_hp_label.outline_size = 8
+	_hp_label.position = Vector3(0.0, 1.9, 0.0)
+	_hp_label.modulate = Color(1, 1, 1)
+	add_child(_hp_label)
+	
+	_hp_bar_bg = MeshInstance3D.new()
+	_hp_bar_bg.name = "HPBarBackground"
+	_hp_bar_bg.position = Vector3(0.0, 2.25, 0.0)
+	_hp_bar_bg.mesh = _make_hp_bar_mesh()
+	_hp_bar_bg.material_override = _make_hp_bar_material(Color(0.08, 0.035, 0.12, 0.95))
+	add_child(_hp_bar_bg)
+	
+	_hp_bar_fill = MeshInstance3D.new()
+	_hp_bar_fill.name = "HPBarFill"
+	_hp_bar_fill.position = Vector3(-HP_BAR_WIDTH * 0.5, 2.25, 0.01)
+	_hp_bar_fill.mesh = _make_hp_bar_mesh()
+	_hp_bar_fill.material_override = _make_hp_bar_material(Color(0.70, 0.22, 0.95, 1.0))
+	add_child(_hp_bar_fill)
+	
+	_hp_bar_value = Label3D.new()
+	_hp_bar_value.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_hp_bar_value.font_size = 18
+	_hp_bar_value.outline_size = 5
+	_hp_bar_value.position = Vector3(0.0, 2.25, 0.04)
+	_hp_bar_value.modulate = Color(1, 1, 1)
+	_hp_bar_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hp_bar_value.render_priority = 20
+	add_child(_hp_bar_value)
+	_update_hp_label()
+
+func _make_hp_bar_mesh() -> QuadMesh:
+	var quad := QuadMesh.new()
+	quad.size = Vector2(HP_BAR_WIDTH, HP_BAR_HEIGHT)
+	return quad
+
+func _make_hp_bar_material(color: Color) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	return material
+
+func _update_hp_label() -> void:
+	var current := int(ceil(_damage.health))
+	var total := int(max_health)
+	_hp_label.text = "HP: %d/%d" % [current, total]
+	_hp_bar_value.text = "%d / %d" % [current, total]
+	var fraction := clampf(_damage.health / max_health, 0.0, 1.0)
+	_hp_bar_fill.scale.x = fraction
+	_hp_bar_fill.position.x = -HP_BAR_WIDTH * 0.5 + (HP_BAR_WIDTH * fraction) * 0.5
+
+## Hide the opponent and the toilet it is currently using while the local
+## target challenge is running. The physics/collisions of the toilet remain
+## unchanged; this is intentionally a visual hide only.
+func set_challenge_hidden(hidden: bool) -> void:
+	_challenge_hidden = hidden
+	if hidden:
+		_stop_duel()
+		if is_instance_valid(_toilet):
+			_challenge_hidden_toilet = _toilet
+			_challenge_hidden_toilet.visible = false
+		visible = false
+		set_physics_process(false)
+	else:
+		if _defeated:
+			return
+		if is_instance_valid(_challenge_hidden_toilet):
+			_challenge_hidden_toilet.visible = true
+		_challenge_hidden_toilet = null
+		visible = true
+		set_physics_process(true)
+
+func is_defeated() -> bool:
+	return _defeated
+
+## Respawn the opponent only from the seated practice position.
+func respawn_for_practice() -> bool:
+	if not _defeated or _challenge_hidden:
+		return false
+	var player := _get_player()
+	if not is_instance_valid(player) or not player.has_method("is_seated") or not player.is_seated():
+		return false
+	_defeated = false
+	_damage.reset()
+	_update_hp_label()
+	_release_toilet()
+	_toilet = null
+	global_transform = _respawn_transform
+	velocity = Vector3.ZERO
+	_pee_timer = 0.0
+	_dueling = false
+	_npc_wants_to_fire = true
+	visible = true
+	set_physics_process(true)
+	_state = State.SEARCH
+	_pick_toilet()
+	return true
+
+func _defeat() -> void:
+	if _defeated:
+		return
+	_defeated = true
+	_stop_duel()
+	_release_toilet()
+	_toilet = null
+	velocity = Vector3.ZERO
+	visible = false
+	set_physics_process(false)
 
 func _exit_tree() -> void:
 	super._exit_tree()
@@ -81,7 +214,14 @@ func _pick_toilet() -> void:
 # ------------------------------------------------------------------- duel pipi
 
 func _physics_process(delta: float) -> void:
+	if _challenge_hidden:
+		return
 	super._physics_process(delta)
+	_damage.tick(delta)
+	_update_hp_label()
+	if _damage.is_dead():
+		_defeat()
+		return
 	var player := _get_player()
 	# Nici NPC-ul nici jucatorul nu incep sa se piseze cat timp jucatorul nu s-a asezat.
 	var player_seated: bool = is_instance_valid(player) and player.has_method("is_seated") and player.is_seated()
@@ -147,3 +287,10 @@ func _stop_duel() -> void:
 	var player := _get_player()
 	if player != null and player.has_method("end_auto_duel"):
 		player.end_auto_duel()
+
+## Cheama receive_pee_hit(source, point, normal) pee_stream-ul care te
+## nimereste (vezi pee_stream.gd si Player3D.receive_pee_hit pentru simetrie):
+## doar inregistreaza lovitura, damage-ul efectiv se calculeaza in
+## _physics_process prin PeeDamage (1 HP la fiecare 0.1s de expunere continua).
+func receive_pee_hit(_source: Node, _point: Vector3, _normal: Vector3) -> void:
+	_damage.register_hit()

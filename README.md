@@ -1,255 +1,264 @@
 # Shit Gutter
 
-Prototip Godot 4.6 first-person. Fluxul curent este:
-**Meniu principal → CharacterSelector → hub de benzinărie → terminalul restaurantului → meci local de test → hub.**
+Godot 4.6 first-person prototype. The current flow is:
+**Main menu → CharacterSelector → gas-station hub → restaurant terminal → local test match → hub.**
 
-## Pornire
+## Getting started
 
-1. Dezarhivează Godot 4.6 Standard pentru Windows x86_64. Nu este necesară varianta .NET.
-2. În Godot, apasă **Import** și selectează `project.godot`.
-3. Așteaptă importarea modelelor și texturilor.
-4. Apasă **F5**, apoi **Singleplayer**, și alege un personaj pentru a intra în hub.
-5. Urmează marcajele galbene până la restaurantul **La Ultima Masă**.
-6. Privește terminalul verde de la tejghea, de la cel mult 2,8 metri, și apasă **E**.
-7. Alege harta din lista de la terminal, apoi **Start test match**.
-   Playground rămâne opțiunea implicită; sunt disponibile și **CFR / Night carriage**
-   și **Vlad Tepes / After hours**.
-8. Din orice hartă, **Escape → Back to hub**.
+1. Unzip Godot 4.6 Standard for Windows x86_64. The .NET build is not required.
+2. In Godot, click **Import** and select `project.godot`.
+3. Wait for models and textures to import.
+4. Press **F5**, then **Singleplayer**, and pick a character to enter the hub.
+5. Follow the yellow markers to the **The Last Meal** restaurant.
+6. Look at the green terminal at the counter, from no more than 2.8 meters, and press **E**.
+7. Choose **Start test match**. You'll land in the playground.
+8. From the playground, **Escape → Back to hub**.
 
-Proiectul folosește Forward+ cu Direct3D 12 pe Windows și Jolt Physics.
-Pentru a rula o scenă individuală, deschide-o și apasă **F6**.
+The project uses Forward+ with Direct3D 12 on Windows and Jolt Physics.
+To run an individual scene, open it and press **F6**.
 
-## Controale
+## Controls
 
-| Acțiune | Control |
+| Action | Control |
 | --- | --- |
-| Mișcare | WASD sau săgețile |
-| Privire | Mouse |
-| Săritură | Space |
-| Interacțiune cu obiectul privit | E |
-| Așezare pe o toaletă liberă / ridicare | E |
-| Jet de pișat, doar așezat | Ține click stânga; click dreapta pentru țintire precisă |
-| Pornește/reia o rundă de țintire, pe toaleta de antrenament | R |
-| Alege alt personaj (în timpul jocului); după alegere revii în hub | H |
-| Deschide/închide meniul, anulează interacțiunea | Escape |
+| Move | WASD or the arrow keys |
+| Look | Mouse |
+| Jump | Space |
+| Interact with whatever you're looking at | E |
+| Sit on a free toilet / stand up | E |
+| Pee jet, only while seated | Hold left click; aim with the mouse |
+| Start/resume a targeting round, on the training toilet | R |
+| Switch character (mid-game); you return to the hub after choosing | H |
+| Open/close the menu, cancel an interaction | Escape |
 
-Meniurile eliberează cursorul și blochează mișcarea, săritura și mouse-look.
-La închidere, controlul jucătorului revine automat. Dacă jucătorul cade sub hartă,
-este readus la punctul de pornire.
+Menus release the cursor and block movement, jumping and mouse-look.
+Player control returns automatically when a menu closes. If the player falls
+below the map, they're returned to the spawn point.
 
-## Personajul activ
+## Active character
 
-CharacterSelector oferă personajul verde, bunicul albastru și doamna mov.
-Alegerea este păstrată în `Data.SelectPlayer` pe durata sesiunii și folosită
-în hub și toate hărțile locale. Vitezele colegului sunt păstrate: verde 5, albastru 3,
-mov 10. Escape din selector revine la meniul principal.
+CharacterSelector offers the green character, the blue grandpa and the purple
+lady. The choice used to live only in `Data.SelectPlayer` for the current
+session — it's now saved to `user://save.cfg` via `Data.set_selected_character()`
+and restored automatically the next time the game launches, then used in both
+the hub and the playground. Each character's speed is preserved: green 5,
+blue 3, purple 10. Escape from the selector returns to the main menu.
 
-`systems/world_session.gd` creează un singur `new_player`, din scena personajului
-ales, la nodul `PlayerSpawn` din fiecare hartă. Transformarea este aplicată înainte
-de `_ready()`, astfel încât și respawn-ul folosește punctul corect. Pentru a muta
-locul de pornire, mută sau rotește `PlayerSpawn` în editor. Nu adăuga un player
-manual în hărți: acesta ar dubla controllerul și camera.
+`systems/world_session.gd` creates a single `new_player`, from the chosen
+character's scene, at the `PlayerSpawn` node on each map. The transform is
+applied before `_ready()`, so respawning also uses the right point. To move
+the starting point, move or rotate `PlayerSpawn` in the editor. Don't add a
+player manually to the hub or playground: it would duplicate the controller
+and camera.
 
-Modelul verde privește nativ spre +Z. În scena jucătorului este rotit cu 180°,
-astfel încât fața, camera și deplasarea înainte să fie aliniate pe -Z.
-Modelul este ridicat cu 0,082764 m pentru a pune tălpile la nivelul solului;
-camera stabilă este la `(0, 1.64, -0.245)`, la nivelul ochilor, spre față.
-Corpul folosește stratul vizual 2 și nu este văzut de camera locală (stratul 1),
-pentru a evita vederea interiorului capului. Rămâne vizibil în editor și pentru
-camere externe care includ stratul 2.
+The green model natively faces +Z. In the player scene it's rotated 180°, so
+the face, camera and forward movement all line up on -Z. The model is raised
+by 0.082764 m to put the feet at ground level; the resting camera sits at
+`(0, 1.64, -0.245)`, at eye level, facing forward. The body uses visual layer
+2 and isn't seen by the local camera (layer 1), to avoid seeing the inside of
+the head. It stays visible in the editor and to external cameras that include
+layer 2.
 
-Animația `MersCaracter1` este folosită pentru mers. GLB-ul nu conține animații
-dedicate de idle sau săritură: momentan se folosește postura neutră în acele stări.
-Animațiile originale, inclusiv `Salut` și `StatToaleta`, sunt păstrate.
-`systems/character_animations.gd` copiază bibliotecile pentru fiecare instanță și
-leagă pistele la scheletul real, inclusiv după redenumirea armăturii cu Make Local.
-Mersul rulează în buclă; `StatToaleta` rulează o dată și rămâne în poziția așezat.
-Nu trebuie modificat importul GLB pentru a activa bucla la runtime.
+The `MersCaracter1` animation is used for walking. The GLB doesn't contain
+dedicated idle or jump animations: the neutral standing pose is used for those
+states for now. The original animations, including `Salut` and `StatToaleta`,
+are kept. `systems/character_animations.gd` copies the libraries for every
+instance and rebinds the tracks to the real skeleton, including after
+renaming the armature with Make Local. Walking loops; `StatToaleta` plays once
+and holds the seated pose. The GLB import itself doesn't need to be changed to
+get runtime looping.
 
-## Hub și intrarea în meci
+## Hub and entering a match
 
-Hub-ul este o schiță editabilă: curte, parcare, pompe, restaurant, toalete,
-indicatoare și coliziuni. Toate obiectele de decor sunt noduri în `hub.tscn`,
-astfel încât pot fi mutate sau înlocuite cu modele finale în editor.
+The hub is an editable draft: yard, parking lot, pumps, restaurant, toilets,
+signage and collision. Every set-dressing object is a node in `hub.tscn`, so
+it can be moved or swapped for final models in the editor.
 
-Apropierea de restaurant nu pornește nimic automat. Terminalul trebuie privit
-de aproape și activat cu E. Meniul afișează antrenamentul local, lista de hărți,
-un jucător și butonul de confirmare. Multiplayer-ul este dezactivat explicit:
-**nu există încă server, coadă de matchmaking, lobby de rețea sau meci online**.
-Hub-ul este local în această etapă.
+Getting close to the restaurant doesn't start anything automatically. The
+terminal has to be looked at up close and activated with E. The menu shows
+local practice, the Playground map, a player count and a confirm button.
+Multiplayer is explicitly disabled: **there's no server, matchmaking queue,
+network lobby or online match yet**. The hub is local-only at this stage.
 
-Lângă punctul de pornire, în stânga, terminalul galben **SCHIMBĂ PERSONAJUL**
-deschide CharacterSelector cu E. Trebuie privit de aproape (maximum 2,8 m),
-la fel ca terminalul de meci. După alegere revii la spawn-ul hub-ului cu noul
-personaj. Tasta H rămâne disponibilă și în hub, și în hărțile locale.
+Near the spawn point, on the left, the yellow **CHANGE CHARACTER** terminal
+opens CharacterSelector with E. It has to be looked at up close (2.8 m max),
+same as the match terminal. After choosing, you return to the hub spawn with
+the new character. The H key stays available in both the hub and the
+playground.
 
-Escape deschide un meniu cu continuare, întoarcere în hub (din hărțile locale) și
-întoarcere la meniul principal.
+Escape opens a menu with Continue, Options (opens as an overlay on top of the
+pause menu without leaving the game — pressing Back or Escape again returns to
+the pause menu instead of the main menu), Back to hub (from the playground)
+and Main menu.
 
-## Integrare cu munca echipei
+## Integration with the team's work
 
-### Hărți noi: CFR și liceul Vlad Țepeș
+### The toilet and the jet
 
-Ambele sunt prototipuri locale explorabile, cu coliziuni, același personaj ales,
-HUD-ul de fuel, meniul de opțiuni și întoarcere în hub. Nu introduc încă misiuni,
-multiplayer, NPC-uri noi sau un sistem paralel de viață. Mecanica actuală de
-jet/aim/fuel a echipei este reutilizată fără modificări.
+In the hub you can use any free toilet. In the playground, to the right of the
+spawn point, there's a **training toilet** facing three turquoise targets.
+Look at the bowl up close and press E. The camera lowers, movement and jumping
+are blocked, and the mouse controls aiming (75° left/right). Hold left click
+to fire; the target flashes and counts hits. Press E again to stand up.
+Standing up checks for free space for the body.
 
-| Hartă | Scenă | Conținut |
-| --- | --- | --- |
-| CFR / Night carriage | `maps/cfr_train/cfr_train.tscn` | Vagon de noapte, bănci, rafturi de bagaje, geamuri murdare, pete pe pereți/tavan/podea și exact două WC-uri față în față |
-| Vlad Tepes / After hours | `maps/vlad_tepes/vlad_tepes.tscn` | Liceu fictiv degradat: curte cu teren/coș de baschet, coridor, clasă cu tablă și bănci, grup sanitar cu trei WC-uri |
+### Targeting mini-game
 
-Trenul are materiale emisive pe unele pete și lumini locale de aceeași culoare,
-astfel încât „mizeria luminează” inclusiv în rendererul Compatibility; nu depinde
-de GI sau de efectul de bloom. WC-urile sunt libere și folosesc interacțiunea E
-existentă. Trenul este un decor staționar, fără simulare de deplasare.
+On the training toilet, **R** starts a **30-second** round. The duel enemy and
+its toilet are hidden visually while the challenge is active, leaving only the
+three targets. Hit the **yellow** target, whose active "AIM HERE" text is
+highlighted green, three times for **10 points**. The
+next target activates automatically; grey targets don't score. A centered HUD
+at the top shows the remaining time and score versus the saved high score; the
+timer turns red below 5 seconds. When the round ends, the result shows **SCORE
+VS HIGH SCORE**.
 
-Liceul nu reproduce planul unei școli reale. Parterul și curtea sunt accesibile;
-etajul este doar decor exterior închis, fără scară. Reperele `GepetoSpawn` și
-`DuelCenter` din tren, respectiv `ErecSpawn` și `ClassroomEncounter` din liceu,
-sunt `Marker3D` pregătite pentru viitoarele personaje/întâlniri, nu NPC-uri active.
+The best score is now saved per practice toilet — keyed by map + node name —
+to `user://save.cfg` via `Data.get_best_score()` / `Data.set_best_score()`, so
+it survives leaving the map, closing the game and relaunching it, instead of
+resetting on scene reload like before.
 
-Scenele se pot deschide direct cu F6. Nodurile `Architecture` și `SetDressing`
-conțin geometrie editabilă în Inspector; nu se generează la pornirea jocului.
-Materialele procedurale din `maps/shared/weathered.gdshader` și decorul low-poly
-sunt create în proiect, fără asset-uri externe noi. Lista de hărți este definită
-în `systems/map_catalog.gd`; controllerul sesiunii citește alegerea din terminal.
+Escape freezes the timer until you continue. Standing up or respawning cancels
+the round without recording a best score. Once the timer runs out, R starts a
+new round. R doesn't restart a round in progress and doesn't work from other
+toilets. Outside of rounds you can shoot freely, with the hit counters still
+running.
 
-`tools/build_story_maps.gd` este instrumentul de construire offline. Nu trebuie
-rulat pentru a juca. **Regenerarea suprascrie cele două scene**, inclusiv eventuale
-editări manuale făcute ulterior; păstrează întâi acele editări în Git:
+The logic is isolated in `systems/practice_challenge.gd`, with the HUD in
+`Scenes/practice_challenge.tscn`; the duration and hits required can be tuned
+in the Inspector. It uses the targets' `hit_received(source)` signal, without
+touching NPC HP or the team's global data.
+
+### Occupancy and collisions
+
+Toilets reserved by NPCs, including ones they're still walking to, show up as
+occupied and can't be taken by the player. NPCs and the player share the same
+`occupied_by` reservation. Standing up, respawning and the player being
+removed all free the bowl. Escape stops the jet and opens the menu while
+keeping the seat reserved; after continuing, left click has to be pressed
+again. H still works to switch characters.
+
+The jet is shared by all three characters, with ballistic droplets and
+collision checks between successive positions: walls stop hits. There are
+limits on droplets/splashes, and effects are cleared on pause and standing up.
+The `GPUParticles3D` prototype in the green scene is kept, but disabled.
+This is local gameplay only; reservations and hits aren't networked.
+
+- **Character selector:** `Scenes/character_selection_screen.gd` calls
+  `Data.set_selected_character()` (which also persists the choice) and opens
+  the hub. `systems/world_session.gd` instantiates the chosen scene from
+  `actors/player/` and exposes the active character through `new_player`. The
+  old `$Player3D` reference was removed from the session controller. H is
+  available during gameplay, not in the pause menu or at a terminal.
+- **Interactions:** there's a single Input Map action, `interact`, bound to E.
+  `Interactor` is a RayCast3D attached to the camera; it checks the 2.8 m
+  range and the first obstacle. Walls block interaction.
+- **New objects:** expose `get_interaction_prompt() -> String` and
+  `interact(player)`. You can reuse `systems/interaction/interactable.gd` and
+  its `activated(player)` signal. The physics body must be on layer 1 or 3;
+  layer 3 is reserved for interactive objects. Don't add another global E
+  handler in the toilet script.
+- **Toilets:** `systems/interaction/toilet.gd` is attached to the root of
+  `Scenes/Toilet.tscn`. It exposes `try_reserve(actor)`, `release(actor)`,
+  `occupant()` and the `interact(actor)` contract. `seat_offset` adjusts the
+  controller's position before the seating animation moves the bones.
+- **Health/hits:** Both the player and the training-duel opponent now have
+  real HP, via a new shared component (`systems/pee_damage.gd`, `PeeDamage` —
+  same pattern as `PeeFuel`): individual droplets land far more often than
+  every 0.1s, so damage isn't applied per-hit; instead, continuous exposure
+  is timed and 1 HP is lost per 0.1s of being sprayed (a short grace window
+  keeps a stream of droplets counted as one continuous exposure). Player3D
+  has `max_health := 500.0` and a new `receive_pee_hit(source, point, normal)`
+  method plus a `health_changed(fraction)` signal; `toilet_pee_duel_npc.gd`
+  (the duel opponent only — NpcBunic/NpcDoamna are unaffected) has
+  `max_health := 300.0`, its own `receive_pee_hit()`, and a solid purple HP bar
+  with the current number drawn over the bar plus `HP: X/300` above its head.
+  The duel opponent disappears at 0 HP and can only be respawned with E while
+  the player is already seated on a toilet. If the player reaches 0 HP, the
+  practice match ends and the player returns to the hub.
+  `Scenes/health_bar_hud.tscn` — previously an orphan instanced in the
+  playground with nothing driving it — now has a red player HP bar with the
+  numeric `HP / MAX HP` printed on it, wired to the player's `health_changed`
+  signal from `systems/world_session.gd`. NPC collisions stay active while
+  seated; the duel opponent and its toilet are temporarily hidden visually
+  during the local target challenge and return after the round.
+- **Practice music:** the hub uses the lobby track and the test map uses the
+  game track. Entering the hub switches back to the lobby music, including after
+  the player is defeated and returns automatically.
+- **Matchmaking/QTE:** the menu confirmation is handled in
+  `systems/world_session.gd`. It currently opens the test map directly;
+  matchmaking and match logic can be hooked in here later.
+- **Settings & save data:** `Sigletons/data.gd` owns everything that should
+  survive a restart — selected character, display mode/resolution, and every
+  practice toilet's best score — loaded once at boot and written to
+  `user://save.cfg` via `Data.save()` on every change. `Data.apply_display_mode()`
+  /`apply_resolution()` are also called once at boot so a saved window mode and
+  resolution take effect immediately. First-run defaults are Fullscreen at
+  1920x1080. `menus/main_menu/options_menu.gd` reads and writes display
+  mode/resolution through `Data.set_display_mode()` / `Data.set_resolution()`
+  instead of touching `DisplayServer` directly, and can run both as its own
+  screen (from the main menu) and embedded inside the in-game pause menu
+  (`embedded_mode`). A "RESET TO DEFAULTS" button in Options (behind a
+  confirmation dialog) calls `Data.reset_to_defaults()`, which wipes the
+  selected character, display settings and all practice best scores back to
+  first-run values and re-saves immediately — no manual save-file deletion
+  needed.
+
+## Structure
 
 ```text
-godot --headless --path . --script res://tools/build_story_maps.gd -- --rebuild-story-maps
+actors/characters/    The three characters and their textures
+actors/player/        First-person controller and the player scene
+assets/              Models, textures and the original Kenney pack
+Scenes/Toilet.tscn    Toilet scene added by teammates
+Scenes/character_selection_screen.tscn  Character choice
+Sigletons/data.gd     Data autoload: selected character, display settings and
+                      practice best scores, all persisted to user://save.cfg
+maps/hub/            The gas station
+maps/playground/     Test match map
+maps/test_3d/        Initial scene
+menus/main_menu/     Game entry point
+systems/interaction/ Shared detection/contract for interactions
+systems/world_session.gd  Menus, input locking and transitions
+ui/                  HUD, match menu and the Escape/pause menu (with an
+                      embedded Options screen)
+tests/               Automated flow checks
 ```
 
-### Toaleta și jetul
+## Automated checks
 
-În hub poți folosi toaletele libere. În playground, în dreapta punctului de
-pornire, există o **toaletă de antrenament** orientată spre trei ținte turcoaz.
-Privește vasul de aproape și apasă E. Camera coboară, mișcarea și săritura sunt
-blocate, iar mouse-ul controlează țintirea (75° în stânga/dreapta).
-Ține click stânga pentru jet; ținta clipește și numără loviturile.
-Apasă E din nou ca să te ridici. Ridicarea verifică spațiul liber pentru corp.
-
-### Mini-joc de țintire
-
-Pe toaleta de antrenament, **R** pornește o rundă de **30 de secunde**.
-Lovește ținta **galbenă**, marcată „ȚINTEȘTE AICI”, cu trei picături pentru
-**10 puncte**. Următoarea țintă se activează automat; țintele gri nu dau puncte.
-HUD-ul arată timpul, scorul și recordul din vizita curentă în playground.
-Recordul nu este salvat pe disc și se resetează când părăsești harta.
-
-Escape îngheață cronometrul până la continuare. E/ridicarea sau respawn-ul
-anulează runda, fără a înregistra un record. După expirarea timpului, R începe
-o rundă nouă. R nu repornește o rundă în desfășurare și nu funcționează de pe
-alte toalete. În afara rundelor poți trage liber, cu contoarele de lovituri.
-
-Logica este izolată în `systems/practice_challenge.gd`, cu HUD-ul în
-`Scenes/practice_challenge.tscn`; durata și loviturile necesare se pot regla
-în Inspector. Folosește semnalul `hit_received(source)` al țintelor, fără
-a modifica HP-ul NPC-urilor sau datele globale ale colegilor.
-
-### Ocupare și coliziuni
-
-Toaletele rezervate de NPC-uri, inclusiv cele spre care încă merg, apar ocupate
-și nu pot fi luate de jucător. Aceeași rezervare `occupied_by` este folosită de
-NPC-uri și player. Ridicarea, respawn-ul și eliminarea playerului eliberează vasul.
-Escape oprește jetul și deschide meniul, păstrând locul ocupat; după continuare
-trebuie apăsat din nou click stânga. H permite în continuare schimbarea personajului.
-
-Jetul este comun tuturor celor trei personaje, cu picături balistice și verificare
-de coliziune între pozițiile succesive: pereții opresc loviturile. Există limite
-pentru picături/stropi, iar efectele sunt eliminate la pauză și ridicare.
-Prototipul `GPUParticles3D` din scena verde este păstrat, dar dezactivat.
-Acesta este gameplay local; rezervările și loviturile nu sunt sincronizate în rețea.
-
-- **Character selector:** `Scenes/character_selection_screen.gd` setează
-  `Data.SelectPlayer` și deschide hub-ul. `systems/world_session.gd` instanțiază
-  scena aleasă din `actors/player/` și expune personajul activ prin `new_player`.
-  Referința veche `$Player3D` a fost eliminată din controllerul sesiunii.
-  H este disponibil în timpul jocului, nu în meniul de pauză sau al terminalului.
-- **Interacțiuni:** există o singură acțiune Input Map, `interact`, legată de E.
-  `Interactor` este un RayCast3D atașat camerei; verifică raza de 2,8 m și primul
-  obstacol. Pereții blochează interacțiunea.
-- **Obiecte noi:** expun metodele `get_interaction_prompt() -> String` și
-  `interact(player)`. Se poate reutiliza `systems/interaction/interactable.gd`
-  și semnalul lui `activated(player)`. Corpul fizic trebuie să fie pe stratul 1
-  sau 3; stratul 3 este rezervat obiectelor interactive. Nu adăuga încă un handler
-  global pentru E în scriptul toaletei.
-- **Toalete:** `systems/interaction/toilet.gd` este atașat rădăcinii scenei
-  `Scenes/Toilet.tscn`. Expune `try_reserve(actor)`, `release(actor)`,
-  `occupant()` și contractul `interact(actor)`. `seat_offset` reglează poziția
-  controllerului înainte de deplasarea oaselor din animația de așezare.
-- **Viață/lovituri:** `new_player.pee_hit(collider, point, normal, source)` emite
-  o dată pentru fiecare picătură care lovește primul corp fizic. Colegul poate
-  conecta sistemul de HP aici sau poate implementa
-  `receive_pee_hit(source, point, normal)` pe corpul lovit. Folosește o singură
-  variantă pentru damage, pentru a nu aplica de două ori aceeași lovitură.
-  Momentan ținta de antrenament numără loviturile; nu este introdus un sistem de
-  viață paralel. Coliziunile NPC-urilor rămân active și când sunt așezați.
-- **Matchmaking/QTE:** confirmarea meniului este gestionată în
-  `systems/world_session.gd`. Acum deschide harta locală aleasă; serviciul de
-  matchmaking și logica meciului pot fi conectate ulterior aici.
-
-## Structură
-
-```text
-actors/characters/    Cele trei personaje și texturile lor
-actors/player/        Controller first-person și scena jucătorului
-assets/              Modele, texturi și pachetul Kenney original
-Scenes/Toilet.tscn    Scena de toaletă adăugată de colegi
-Scenes/character_selection_screen.tscn  Alegerea personajului
-Sigletons/data.gd     Autoload Data, inclusiv personajul selectat
-maps/hub/            Benzinăria
-maps/playground/     Harta meciului de test
-maps/cfr_train/      Vagon CFR cu două WC-uri față în față
-maps/vlad_tepes/     Liceul fictiv, curtea și interioarele
-maps/shared/         Materiale procedurale pentru hărțile noi
-maps/test_3d/        Scena inițială
-menus/main_menu/     Intrarea în joc
-systems/interaction/ Detectarea și contractul comun pentru interacțiuni
-systems/world_session.gd  Meniuri, blocarea inputului și tranziții
-ui/                  HUD, meniul meciului și meniul Escape
-tests/               Verificarea automată a fluxului
-tools/               Construirea offline a scenelor-prototip
-```
-
-## Verificare automată
-
-După importarea proiectului în editor, rulează din rădăcina repository-ului
-(înlocuiește `godot` cu calea executabilului tău, dacă nu este în PATH):
+After importing the project in the editor, run these from the repository root
+(replace `godot` with your executable's path if it isn't on PATH):
 
 ```text
 godot --headless --path . --script res://tests/hub_flow_test.gd --log-file .godot/hub-test.log
 godot --headless --path . --script res://tests/toilet_flow_test.gd --log-file .godot/toilet-test.log
 godot --headless --path . --script res://tests/practice_challenge_test.gd --log-file .godot/practice-test.log
-godot --headless --path . --script res://tests/story_maps_test.gd --log-file .godot/story-test.log
 ```
 
-Testul verifică traseul meniu → selector → hub → playground → hub → meniu,
-toate cele trei personaje și păstrarea vitezelor/selecției, un singur player și o
-singură cameră, pornirea și respawn-ul la `PlayerSpawn`, schimbarea cu H sau
-terminalul de personaje (distanță, prompt și blocare în pauză), mersul
-și săritura, detectarea de aproape, blocarea prin pereți și blocarea inputului
-în meniuri. La succes afișează `HUB_FLOW_OK`.
-Poziția camerei, modelul și interfața se verifică suplimentar prin rulare grafică.
-`TOILET_FLOW_OK` confirmă testele celor trei rig-uri (oase animate efectiv),
-izolarea între două instanțe, ocuparea comună NPC/player, raza și pereții,
-așezarea/ridicarea, jetul, loviturile pe țintă, pauza și eliberarea rezervării.
-`PRACTICE_CHALLENGE_OK` verifică lovituri reale pe toate trei țintele cu fiecare
-personaj, scorul, expirarea timpului, pauza, reluarea, anularea și schimbarea scenei.
-`STORY_MAPS_OK` verifică alegerea celor două hărți din terminal, toate personajele,
-parcurgerea vagonului și trecerea prin ușile liceului, orientarea/nr. WC-urilor,
-așezarea și ridicarea, coliziunile, meniul Options și întoarcerea în hub.
+The first test checks the menu → selector → hub → playground → hub → menu
+path, all three characters and that speed/selection are preserved, a single
+player and camera, spawning and respawning at `PlayerSpawn`, switching with H
+or the character terminal (distance, prompt and being blocked during pause),
+walking and jumping, close-range detection, blocking through walls, and input
+being blocked in menus. On success it prints `HUB_FLOW_OK`. Camera position,
+the model and the UI are additionally checked by running the game with
+graphics. `TOILET_FLOW_OK` confirms the three-rig tests (bones actually
+animating), isolation between two instances, shared NPC/player occupancy,
+range and walls, sitting/standing, the jet, hits on target, pausing and
+releasing the reservation. `PRACTICE_CHALLENGE_OK` checks real hits on all
+three targets with every character, scoring, the timer running out, pausing,
+resuming, cancelling and scene changes. That test resets `Data.best_scores` in
+memory before it runs so leftover save data can't affect its assertions —
+but any score it records during the run is still written to your real
+`user://save.cfg`, the same way a normal play session would.
 
-## Asset-uri
+## Assets
 
-Pachetul Kenney Animated Characters Retro este păstrat ca sursă, dar nu mai este
-folosit de jucătorul activ. Licența sa CC0 se află în
-`assets/characters/kenney_animated_characters_retro/License.txt`.
-Personajul verde și obiectele de toaletă sunt cele adăugate de echipă.
+The Kenney Animated Characters Retro pack is kept as source material, but is
+no longer used by the active player. Its CC0 license is at
+`assets/characters/kenney_animated_characters_retro/License.txt`. The green
+character and the toilet objects are the ones added by the team.
 
-Păstrează fișierele sursă, fișierele `.import` și `.uid` în Git.
-Folderul `.godot/` este cache generat local și este ignorat.
+Keep source files, `.import` files and `.uid` files in Git. The `.godot/`
+folder is a locally generated cache and is ignored.

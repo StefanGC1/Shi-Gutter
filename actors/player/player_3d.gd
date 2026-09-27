@@ -5,16 +5,21 @@ signal pee_hit(collider: Node, point: Vector3, normal: Vector3, source: Node)
 ## Emis la fiecare fizica cu fractiunea (0..1) ramasa din rezerva de pipi,
 ## ca UI-ul sa poata desena bara.
 signal fuel_changed(fraction: float)
+## Emis la fiecare fizica cu fractiunea (0..1) de viata ramasa, ca UI-ul sa
+## poata desena bara de HP.
+signal health_changed(fraction: float)
+signal died
 
 const CharacterAnimations = preload("res://systems/character_animations.gd")
 const PeeStream = preload("res://systems/pee_stream.gd")
-# PeeFuel are class_name global (in pee_fuel.gd), deci nu se mai preincarca aici
-# (evita eroarea "shadowed global identifier").
+# PeeFuel si PeeDamage au class_name global (in pee_fuel.gd / pee_damage.gd),
+# deci nu se mai preincarca aici (evita eroarea "shadowed global identifier").
 
 @export var speed := 5.0
 @export var acceleration := 22.0
 @export var jump_velocity := 6.5
 @export var mouse_sensitivity := 0.0025
+@export var max_health := 500.0
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera: Camera3D = $CameraPivot/Camera3D
@@ -37,6 +42,7 @@ var _seated := false
 ## indiferent daca sta jos sau nu, pana la end_auto_duel().
 var _auto_duel_target: Node3D = null
 var _fuel := PeeFuel.new()
+var _damage: PeeDamage
 
 func is_seated() -> bool:
 	return _seated
@@ -44,6 +50,7 @@ func is_seated() -> bool:
 func _ready() -> void:
 	_spawn_transform = global_transform
 	_standing_camera_position = camera_pivot.position
+	_damage = PeeDamage.new(max_health)
 	# Preserve original materials; external cameras can render layer 2.
 	for item in model.find_children("*", "MeshInstance3D", true, false):
 		(item as MeshInstance3D).layers = 2
@@ -78,6 +85,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		# An interaction can immediately remove this player by changing scenes.
 		get_viewport().set_input_as_handled()
 		if is_seated():
+			var enemy := get_tree().get_first_node_in_group(&"practice_duel_enemy")
+			if enemy != null and enemy.has_method("is_defeated") and enemy.is_defeated() and enemy.has_method("respawn_for_practice"):
+				if enemy.respawn_for_practice():
+					_refresh_interaction_prompt()
+					return
 			stand_up()
 		else:
 			interactor.try_interact(self)
@@ -91,10 +103,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+	# Aplica damage-ul acumulat din expunerea la jetul advers, indiferent daca
+	# stai jos sau in picioare. La 0 HP, world_session te trimite inapoi in hub.
+	_damage.tick(delta)
+	health_changed.emit(_damage.fraction())
+	if _damage.is_dead():
+		_die()
+		return
 	# Jucatorul NU are homing: pee_stream.aim_target ramane mereu null pentru el,
 	# deci fara CLICK DREAPTA (aim) jetul e complet aleator (wild_spray), iar cu
 	# CLICK DREAPTA urmareste efectiv camera, la fel ca orice tintire manuala.
 	if is_seated():
+		_refresh_interaction_prompt()
 		if not is_instance_valid(seated_toilet) or not seated_toilet.is_inside_tree():
 			respawn()
 			return
@@ -131,7 +151,7 @@ func _physics_process(delta: float) -> void:
 
 func set_controls_enabled(value: bool) -> void:
 	controls_enabled = value
-	interactor.prompt_override = "[E] Stand up  ·  LEFT CLICK: shoot (random, no aim)  ·  RIGHT CLICK: aim precisely" if value and is_seated() else ""
+	_refresh_interaction_prompt()
 	interactor.set_interaction_enabled(value and not is_seated())
 	if not value:
 		_shoot_requested = false
@@ -147,6 +167,16 @@ func respawn() -> void:
 	global_transform = _spawn_transform
 	velocity = Vector3.ZERO
 	camera_pivot.rotation = Vector3.ZERO
+
+func _refresh_interaction_prompt() -> void:
+	if not controls_enabled or not is_seated():
+		interactor.prompt_override = ""
+		return
+	var enemy := get_tree().get_first_node_in_group(&"practice_duel_enemy")
+	if enemy != null and enemy.has_method("is_defeated") and enemy.is_defeated():
+		interactor.prompt_override = "[E] Respawn opponent  ·  LEFT CLICK: shoot (random, no aim)  ·  RIGHT CLICK: aim precisely"
+	else:
+		interactor.prompt_override = "[E] Stand up  ·  LEFT CLICK: shoot (random, no aim)  ·  RIGHT CLICK: aim precisely"
 
 func _update_locomotion(walking: bool) -> void:
 	if is_seated():
@@ -172,6 +202,17 @@ func end_auto_duel() -> void:
 	_auto_duel_target = null
 	if not is_seated():
 		pee_stream.firing = false
+
+## Cheama receive_pee_hit(source, point, normal) direct pee_stream-ul care te
+## nimereste (vezi pee_stream.gd): doar inregistreaza lovitura, damage-ul
+## efectiv se calculeaza in _physics_process prin PeeDamage (1 HP la fiecare
+## 0.1s de expunere continua, nu per strop).
+func receive_pee_hit(_source: Node, _point: Vector3, _normal: Vector3) -> void:
+	_damage.register_hit()
+
+func _die() -> void:
+	health_changed.emit(0.0)
+	died.emit()
 
 func try_sit(toilet: Node3D) -> bool:
 	if not controls_enabled or is_seated() or not is_instance_valid(toilet) or not toilet.has_method("try_reserve"):

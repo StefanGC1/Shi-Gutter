@@ -1,6 +1,8 @@
 extends "res://tests/toilet_flow_test.gd"
 
 func run() -> void:
+	# Real save data must not leak into this run's best-score assertions.
+	root.get_node("Data").best_scores.clear()
 	for choice in 3:
 		root.get_node("Data").SelectPlayer = choice
 		check(change_scene_to_file("res://maps/playground/playground.tscn") == OK, "Playground failed to load")
@@ -19,6 +21,7 @@ func run() -> void:
 		check(challenge.targets[0].hits > 0 and challenge.score == 0, "Free practice must work without scoring")
 		await press("practice_round")
 		check(challenge.running and challenge.score == 0 and challenge.active_index == 0, "R must start a fresh round")
+		check(not world.get_node("NpcPeeDuel").visible, "Duel enemy must disappear during the challenge")
 		var remaining: float = challenge.time_left
 		await press("practice_round")
 		check(challenge.time_left < remaining, "R during a round must not reset the timer")
@@ -47,6 +50,8 @@ func run() -> void:
 		challenge.time_left = 0.01
 		await frames(4)
 		check(not challenge.running and challenge.best_score == 30, "Timeout must finish the round and record its score")
+		check(world.get_node("NpcPeeDuel").visible, "Duel enemy must return after the challenge")
+		check(challenge.result_panel.visible, "Completed challenge must show score vs high score")
 		challenge.targets[0].receive_pee_hit(player, Vector3.ZERO, Vector3.UP)
 		check(challenge.score == 30, "Late impacts cannot alter the result")
 		check(not challenge.targets[0]._in_challenge, "Timeout must restore free-practice targets")

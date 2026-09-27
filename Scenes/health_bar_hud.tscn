@@ -1,12 +1,15 @@
 [gd_scene format=3 uid="uid://t8dcriba5rg2"]
 
+[ext_resource type="Script" path="res://Scenes/health_bar_hud.gd" id="1_hpscr"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mivgj"]
-bg_color = Color(0.7647059, 0.050980393, 0.16862746, 1)
+bg_color = Color(0.08, 0.02, 0.02, 0.92)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s3yju"]
-bg_color = Color(0.29803923, 0.81960785, 0.21568628, 1)
+bg_color = Color(0.82, 0.06, 0.08, 1)
 
 [node name="HealthBarHud" type="CanvasLayer" unique_id=60423207]
+script = ExtResource("1_hpscr")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1499601728]
 anchors_preset = 7
@@ -15,9 +18,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -450.0
-offset_top = -101.0
+offset_top = -105.0
 offset_right = 446.0
-offset_bottom = -61.0
+offset_bottom = -63.0
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(1, 0.68)
@@ -25,3 +28,19 @@ theme_override_styles/background = SubResource("StyleBoxFlat_mivgj")
 theme_override_styles/fill = SubResource("StyleBoxFlat_s3yju")
 value = 100.0
 show_percentage = false
+
+[node name="Value" type="Label" parent="ProgressBar" unique_id=1499601729]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "HP  500 / 500"
+horizontal_alignment = 1
+vertical_alignment = 1

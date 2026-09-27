@@ -8,8 +8,6 @@ const CHARACTER_SELECTOR := "res://Scenes/character_selection_screen.tscn"
 enum Mode { PLAYING, MATCH_MENU, PAUSED, TRANSITIONING }
 
 @export var is_hub := false
-@export var map_title := ""
-@export_multiline var map_objective := ""
 @onready var player_spawn: Marker3D = $PlayerSpawn
 @onready var ui: CanvasLayer = $SessionUI
 var mode := Mode.PLAYING
@@ -20,14 +18,14 @@ var purple_player: PackedScene = preload("res://actors/player/player_purple_man.
 var new_player: Player3D
 
 func _ready() -> void:
-	if not is_hub:
+	if is_hub:
+		MusicPlayer.play("lobby")
+	else:
 		MusicPlayer.play("game")
 
 	ui.configure(is_hub)
-	if not map_title.is_empty():
-		ui.set_map_details(map_title, map_objective)
 	ui.close_requested.connect(close_overlay)
-	ui.practice_requested.connect(func(): travel_to(ui.selected_map_path()))
+	ui.practice_requested.connect(func(): travel_to(PRACTICE))
 	ui.hub_requested.connect(func(): travel_to(HUB))
 	ui.main_menu_requested.connect(func(): travel_to(MAIN_MENU))
 
@@ -45,10 +43,16 @@ func _ready() -> void:
 	new_player.name = "Player3D"
 	new_player.transform = player_spawn.transform
 	add_child(new_player)
+	new_player.died.connect(_on_player_died)
 	new_player.camera.make_current()
 
 	new_player.interactor.prompt_changed.connect(ui.set_prompt)
 	new_player.fuel_changed.connect(ui.set_fuel)
+	var health_hud := get_node_or_null(^"HealthBarHud")
+	if health_hud != null:
+		health_hud.set_max_health(new_player.max_health)
+		new_player.health_changed.connect(health_hud.set_health)
+		health_hud.set_health(1.0)
 	var station := get_node_or_null("MatchStation")
 	if station != null:
 		station.activated.connect(_on_station_activated)
@@ -68,6 +72,12 @@ func _input(event: InputEvent) -> void:
 			ui.close_options()
 		else:
 			close_overlay()
+
+
+func _on_player_died() -> void:
+	if is_hub or mode == Mode.TRANSITIONING:
+		return
+	travel_to(HUB)
 
 func _on_station_activated(actor: CharacterBody3D) -> void:
 	if actor != new_player or mode != Mode.PLAYING:
