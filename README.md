@@ -11,8 +11,10 @@ Prototip Godot 4.6 first-person. Fluxul curent este:
 4. Apasă **F5**, apoi **Singleplayer**, și alege un personaj pentru a intra în hub.
 5. Urmează marcajele galbene până la restaurantul **La Ultima Masă**.
 6. Privește terminalul verde de la tejghea, de la cel mult 2,8 metri, și apasă **E**.
-7. Alege **Pornește meci de test**. Ajungi în playground.
-8. Din playground, **Escape → Înapoi în hub**.
+7. Alege harta din lista de la terminal, apoi **Start test match**.
+   Playground rămâne opțiunea implicită; sunt disponibile și **CFR / Night carriage**
+   și **Vlad Tepes / After hours**.
+8. Din orice hartă, **Escape → Back to hub**.
 
 Proiectul folosește Forward+ cu Direct3D 12 pe Windows și Jolt Physics.
 Pentru a rula o scenă individuală, deschide-o și apasă **F6**.
@@ -26,7 +28,7 @@ Pentru a rula o scenă individuală, deschide-o și apasă **F6**.
 | Săritură | Space |
 | Interacțiune cu obiectul privit | E |
 | Așezare pe o toaletă liberă / ridicare | E |
-| Jet de pișat, doar așezat | Ține click stânga; țintește cu mouse-ul |
+| Jet de pișat, doar așezat | Ține click stânga; click dreapta pentru țintire precisă |
 | Pornește/reia o rundă de țintire, pe toaleta de antrenament | R |
 | Alege alt personaj (în timpul jocului); după alegere revii în hub | H |
 | Deschide/închide meniul, anulează interacțiunea | Escape |
@@ -39,14 +41,14 @@ este readus la punctul de pornire.
 
 CharacterSelector oferă personajul verde, bunicul albastru și doamna mov.
 Alegerea este păstrată în `Data.SelectPlayer` pe durata sesiunii și folosită
-în hub și playground. Vitezele colegului sunt păstrate: verde 5, albastru 3,
+în hub și toate hărțile locale. Vitezele colegului sunt păstrate: verde 5, albastru 3,
 mov 10. Escape din selector revine la meniul principal.
 
 `systems/world_session.gd` creează un singur `new_player`, din scena personajului
 ales, la nodul `PlayerSpawn` din fiecare hartă. Transformarea este aplicată înainte
 de `_ready()`, astfel încât și respawn-ul folosește punctul corect. Pentru a muta
 locul de pornire, mută sau rotește `PlayerSpawn` în editor. Nu adăuga un player
-manual în hub sau playground: acesta ar dubla controllerul și camera.
+manual în hărți: acesta ar dubla controllerul și camera.
 
 Modelul verde privește nativ spre +Z. În scena jucătorului este rotit cu 180°,
 astfel încât fața, camera și deplasarea înainte să fie aliniate pe -Z.
@@ -71,7 +73,7 @@ indicatoare și coliziuni. Toate obiectele de decor sunt noduri în `hub.tscn`,
 astfel încât pot fi mutate sau înlocuite cu modele finale în editor.
 
 Apropierea de restaurant nu pornește nimic automat. Terminalul trebuie privit
-de aproape și activat cu E. Meniul afișează antrenamentul local, harta Playground,
+de aproape și activat cu E. Meniul afișează antrenamentul local, lista de hărți,
 un jucător și butonul de confirmare. Multiplayer-ul este dezactivat explicit:
 **nu există încă server, coadă de matchmaking, lobby de rețea sau meci online**.
 Hub-ul este local în această etapă.
@@ -79,12 +81,48 @@ Hub-ul este local în această etapă.
 Lângă punctul de pornire, în stânga, terminalul galben **SCHIMBĂ PERSONAJUL**
 deschide CharacterSelector cu E. Trebuie privit de aproape (maximum 2,8 m),
 la fel ca terminalul de meci. După alegere revii la spawn-ul hub-ului cu noul
-personaj. Tasta H rămâne disponibilă și în hub, și în playground.
+personaj. Tasta H rămâne disponibilă și în hub, și în hărțile locale.
 
-Escape deschide un meniu cu continuare, întoarcere în hub (din playground) și
+Escape deschide un meniu cu continuare, întoarcere în hub (din hărțile locale) și
 întoarcere la meniul principal.
 
 ## Integrare cu munca echipei
+
+### Hărți noi: CFR și liceul Vlad Țepeș
+
+Ambele sunt prototipuri locale explorabile, cu coliziuni, același personaj ales,
+HUD-ul de fuel, meniul de opțiuni și întoarcere în hub. Nu introduc încă misiuni,
+multiplayer, NPC-uri noi sau un sistem paralel de viață. Mecanica actuală de
+jet/aim/fuel a echipei este reutilizată fără modificări.
+
+| Hartă | Scenă | Conținut |
+| --- | --- | --- |
+| CFR / Night carriage | `maps/cfr_train/cfr_train.tscn` | Vagon de noapte, bănci, rafturi de bagaje, geamuri murdare, pete pe pereți/tavan/podea și exact două WC-uri față în față |
+| Vlad Tepes / After hours | `maps/vlad_tepes/vlad_tepes.tscn` | Liceu fictiv degradat: curte cu teren/coș de baschet, coridor, clasă cu tablă și bănci, grup sanitar cu trei WC-uri |
+
+Trenul are materiale emisive pe unele pete și lumini locale de aceeași culoare,
+astfel încât „mizeria luminează” inclusiv în rendererul Compatibility; nu depinde
+de GI sau de efectul de bloom. WC-urile sunt libere și folosesc interacțiunea E
+existentă. Trenul este un decor staționar, fără simulare de deplasare.
+
+Liceul nu reproduce planul unei școli reale. Parterul și curtea sunt accesibile;
+etajul este doar decor exterior închis, fără scară. Reperele `GepetoSpawn` și
+`DuelCenter` din tren, respectiv `ErecSpawn` și `ClassroomEncounter` din liceu,
+sunt `Marker3D` pregătite pentru viitoarele personaje/întâlniri, nu NPC-uri active.
+
+Scenele se pot deschide direct cu F6. Nodurile `Architecture` și `SetDressing`
+conțin geometrie editabilă în Inspector; nu se generează la pornirea jocului.
+Materialele procedurale din `maps/shared/weathered.gdshader` și decorul low-poly
+sunt create în proiect, fără asset-uri externe noi. Lista de hărți este definită
+în `systems/map_catalog.gd`; controllerul sesiunii citește alegerea din terminal.
+
+`tools/build_story_maps.gd` este instrumentul de construire offline. Nu trebuie
+rulat pentru a juca. **Regenerarea suprascrie cele două scene**, inclusiv eventuale
+editări manuale făcute ulterior; păstrează întâi acele editări în Git:
+
+```text
+godot --headless --path . --script res://tools/build_story_maps.gd -- --rebuild-story-maps
+```
 
 ### Toaleta și jetul
 
@@ -152,7 +190,7 @@ Acesta este gameplay local; rezervările și loviturile nu sunt sincronizate în
   Momentan ținta de antrenament numără loviturile; nu este introdus un sistem de
   viață paralel. Coliziunile NPC-urilor rămân active și când sunt așezați.
 - **Matchmaking/QTE:** confirmarea meniului este gestionată în
-  `systems/world_session.gd`. Acum deschide direct harta de test; serviciul de
+  `systems/world_session.gd`. Acum deschide harta locală aleasă; serviciul de
   matchmaking și logica meciului pot fi conectate ulterior aici.
 
 ## Structură
@@ -166,12 +204,16 @@ Scenes/character_selection_screen.tscn  Alegerea personajului
 Sigletons/data.gd     Autoload Data, inclusiv personajul selectat
 maps/hub/            Benzinăria
 maps/playground/     Harta meciului de test
+maps/cfr_train/      Vagon CFR cu două WC-uri față în față
+maps/vlad_tepes/     Liceul fictiv, curtea și interioarele
+maps/shared/         Materiale procedurale pentru hărțile noi
 maps/test_3d/        Scena inițială
 menus/main_menu/     Intrarea în joc
 systems/interaction/ Detectarea și contractul comun pentru interacțiuni
 systems/world_session.gd  Meniuri, blocarea inputului și tranziții
 ui/                  HUD, meniul meciului și meniul Escape
 tests/               Verificarea automată a fluxului
+tools/               Construirea offline a scenelor-prototip
 ```
 
 ## Verificare automată
@@ -183,6 +225,7 @@ După importarea proiectului în editor, rulează din rădăcina repository-ului
 godot --headless --path . --script res://tests/hub_flow_test.gd --log-file .godot/hub-test.log
 godot --headless --path . --script res://tests/toilet_flow_test.gd --log-file .godot/toilet-test.log
 godot --headless --path . --script res://tests/practice_challenge_test.gd --log-file .godot/practice-test.log
+godot --headless --path . --script res://tests/story_maps_test.gd --log-file .godot/story-test.log
 ```
 
 Testul verifică traseul meniu → selector → hub → playground → hub → meniu,
@@ -197,6 +240,9 @@ izolarea între două instanțe, ocuparea comună NPC/player, raza și pereții,
 așezarea/ridicarea, jetul, loviturile pe țintă, pauza și eliberarea rezervării.
 `PRACTICE_CHALLENGE_OK` verifică lovituri reale pe toate trei țintele cu fiecare
 personaj, scorul, expirarea timpului, pauza, reluarea, anularea și schimbarea scenei.
+`STORY_MAPS_OK` verifică alegerea celor două hărți din terminal, toate personajele,
+parcurgerea vagonului și trecerea prin ușile liceului, orientarea/nr. WC-urilor,
+așezarea și ridicarea, coliziunile, meniul Options și întoarcerea în hub.
 
 ## Asset-uri
 

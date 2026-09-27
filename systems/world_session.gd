@@ -8,6 +8,8 @@ const CHARACTER_SELECTOR := "res://Scenes/character_selection_screen.tscn"
 enum Mode { PLAYING, MATCH_MENU, PAUSED, TRANSITIONING }
 
 @export var is_hub := false
+@export var map_title := ""
+@export_multiline var map_objective := ""
 @onready var player_spawn: Marker3D = $PlayerSpawn
 @onready var ui: CanvasLayer = $SessionUI
 var mode := Mode.PLAYING
@@ -22,8 +24,10 @@ func _ready() -> void:
 		MusicPlayer.play("game")
 
 	ui.configure(is_hub)
+	if not map_title.is_empty():
+		ui.set_map_details(map_title, map_objective)
 	ui.close_requested.connect(close_overlay)
-	ui.practice_requested.connect(func(): travel_to(PRACTICE))
+	ui.practice_requested.connect(func(): travel_to(ui.selected_map_path()))
 	ui.hub_requested.connect(func(): travel_to(HUB))
 	ui.main_menu_requested.connect(func(): travel_to(MAIN_MENU))
 
