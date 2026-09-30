@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://t8dcriba5rg2"]
 
-[ext_resource type="Script" path="res://Scenes/health_bar_hud.gd" id="1_hpscr"]
+[ext_resource type="Script" uid="uid://bce6mjxwgpgbn" path="res://Scenes/health_bar_hud.gd" id="1_hpscr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mivgj"]
 bg_color = Color(0.08, 0.02, 0.02, 0.92)
@@ -36,7 +36,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
 theme_override_constants/outline_size = 6
