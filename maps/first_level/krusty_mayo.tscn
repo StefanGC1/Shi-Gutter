@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bc6g043ni6h4y"]
+
+[ext_resource type="PackedScene" uid="uid://f44q3ffx2sqy" path="res://maps/first_level/KrustyMayo.glb" id="1_7a8m5"]
+
+[node name="KrustyMayo" unique_id=1891869324 instance=ExtResource("1_7a8m5")]
