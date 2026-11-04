@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/quicktime/quicktime_system.gd" id="1_system"]
+
+[node name="QuickTimeSystem" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_system")
+
+[node name="Events" type="Node2D" parent="."]
