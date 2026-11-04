@@ -1,0 +1,238 @@
+[gd_scene format=3 uid="uid://ccbmfl6lkc1p8"]
+
+[ext_resource type="Script" uid="uid://b2h7j616vr4o1" path="res://maps/test_quicktime_2d/test_quicktime_2d.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://systems/quicktime/quicktime_system.tscn" id="2_system"]
+[ext_resource type="Script" path="res://systems/quicktime/quicktime_event.gd" id="3_event"]
+[ext_resource type="Script" path="res://systems/quicktime/quicktime_dispatch.gd" id="4_dispatch"]
+
+[sub_resource type="Resource" id="QuickTimeEvent_mouse"]
+script = ExtResource("3_event")
+radius = 72.0
+duration = 1.2
+approach_scale = 2.1
+allowed_dur_before = 0.2
+allowed_dur_after = 0.2
+
+[sub_resource type="Resource" id="QuickTimeEvent_keyboard"]
+script = ExtResource("3_event")
+event_type = 1
+radius = 64.0
+duration = 1.2
+approach_scale = 2.1
+allowed_dur_before = 0.2
+allowed_dur_after = 0.2
+
+[sub_resource type="Resource" id="QuickTimeDispatch_first"]
+script = ExtResource("4_dispatch")
+event = SubResource("QuickTimeEvent_mouse")
+screen_position = Vector2(0.3, 0.54)
+
+[sub_resource type="Resource" id="QuickTimeDispatch_second"]
+script = ExtResource("4_dispatch")
+event = SubResource("QuickTimeEvent_keyboard")
+delay = 1.8
+screen_position = Vector2(0.5, 0.54)
+
+[sub_resource type="Resource" id="QuickTimeDispatch_third"]
+script = ExtResource("4_dispatch")
+event = SubResource("QuickTimeEvent_mouse")
+delay = 1.8
+screen_position = Vector2(0.7, 0.54)
+
+[sub_resource type="Environment" id="Environment_playground"]
+background_mode = 1
+background_color = Color(0.025, 0.04, 0.065, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.48, 0.65, 0.85, 1)
+ambient_light_energy = 0.7
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Material_floor"]
+albedo_color = Color(0.075, 0.115, 0.17, 1)
+roughness = 0.9
+
+[sub_resource type="PlaneMesh" id="Mesh_floor"]
+material = SubResource("Material_floor")
+size = Vector2(16, 16)
+
+[sub_resource type="StandardMaterial3D" id="Material_target"]
+albedo_color = Color(0.2, 0.75, 0.85, 1)
+metallic = 0.2
+roughness = 0.4
+
+[sub_resource type="SphereMesh" id="Mesh_target"]
+material = SubResource("Material_target")
+radius = 0.25
+height = 0.5
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+bg_color = Color(0.045, 0.07, 0.105, 0.97)
+border_width_bottom = 1
+border_color = Color(0.14, 0.24, 0.34, 1)
+
+[sub_resource type="StyleBoxFlat" id="Style_status"]
+bg_color = Color(0.045, 0.07, 0.105, 0.97)
+border_width_top = 1
+border_color = Color(0.14, 0.24, 0.34, 1)
+
+[sub_resource type="StyleBoxFlat" id="Style_button"]
+bg_color = Color(0.1, 0.17, 0.24, 1)
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="StyleBoxFlat" id="Style_button_hover"]
+bg_color = Color(0.15, 0.26, 0.36, 1)
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+
+[sub_resource type="Theme" id="Theme_playground"]
+default_font_size = 16
+Button/colors/font_color = Color(0.85, 0.92, 0.98, 1)
+Button/styles/normal = SubResource("Style_button")
+Button/styles/hover = SubResource("Style_button_hover")
+Button/styles/pressed = SubResource("Style_button_hover")
+Label/colors/font_color = Color(0.7, 0.79, 0.88, 1)
+
+[node name="TestQuicktime2d" type="Node2D"]
+script = ExtResource("1_test")
+mouse_event = SubResource("QuickTimeEvent_mouse")
+keyboard_event = SubResource("QuickTimeEvent_keyboard")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_playground")
+
+[node name="World" type="Node3D" parent="."]
+visible = false
+
+[node name="Camera3D" type="Camera3D" parent="World"]
+position = Vector3(0, 1.5, 6)
+rotation_degrees = Vector3(-10.8501, 0, 0)
+current = true
+fov = 55.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
+rotation_degrees = Vector3(-55, -25, 0)
+light_color = Color(0.75, 0.88, 1, 1)
+light_energy = 1.5
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="World"]
+position = Vector3(0, -0.65, 0)
+mesh = SubResource("Mesh_floor")
+
+[node name="Target" type="MeshInstance3D" parent="World"]
+position = Vector3(0, 0.15, 0)
+mesh = SubResource("Mesh_target")
+
+[node name="QuickTimeSystem" parent="." instance=ExtResource("2_system")]
+dispatches = Array[ExtResource("4_dispatch")]([SubResource("QuickTimeDispatch_first"), SubResource("QuickTimeDispatch_second"), SubResource("QuickTimeDispatch_third")])
+
+[node name="Interface" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="Panel" type="PanelContainer" parent="Interface"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme = SubResource("Theme_playground")
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Margin" type="MarginContainer" parent="Interface/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Interface/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Interface/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Quick time playground"
+
+[node name="InstructionsLabel" type="Label" parent="Interface/Panel/Margin/Content"]
+layout_mode = 2
+text = "Choose a demo, or right-click to start. Match the shrinking ring to the target border."
+autowrap_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Interface/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MouseButton" type="Button" parent="Interface/Panel/Margin/Content/Buttons"]
+layout_mode = 2
+focus_mode = 0
+text = "1  Mouse"
+
+[node name="KeyboardButton" type="Button" parent="Interface/Panel/Margin/Content/Buttons"]
+layout_mode = 2
+focus_mode = 0
+text = "2  Keyboard"
+
+[node name="SequenceButton" type="Button" parent="Interface/Panel/Margin/Content/Buttons"]
+layout_mode = 2
+focus_mode = 0
+text = "3  Sequence"
+
+[node name="WorldButton" type="Button" parent="Interface/Panel/Margin/Content/Buttons"]
+layout_mode = 2
+focus_mode = 0
+text = "4  3D target"
+
+[node name="StopButton" type="Button" parent="Interface/Panel/Margin/Content/Buttons"]
+layout_mode = 2
+focus_mode = 0
+text = "Esc  Stop"
+
+[node name="Status" type="PanelContainer" parent="Interface"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -116.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = SubResource("Theme_playground")
+theme_override_styles/panel = SubResource("Style_status")
+
+[node name="Margin" type="MarginContainer" parent="Interface/Status"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Interface/Status/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ActiveLabel" type="Label" parent="Interface/Status/Margin/Content"]
+layout_mode = 2
+text = "Active events: 0"
+
+[node name="StateLabel" type="Label" parent="Interface/Status/Margin/Content"]
+layout_mode = 2
+text = "Current window: idle"
+
+[node name="ResultLabel" type="Label" parent="Interface/Status/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 0.98, 1)
+theme_override_font_sizes/font_size = 19
+text = "Last result: —"

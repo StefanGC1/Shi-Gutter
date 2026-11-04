@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://ct2lq3i4dv2t3"]
+
+[ext_resource type="PackedScene" path="res://systems/quicktime/actionable_event/actionable_event.tscn" id="1_actionable_event"]
+
+[node name="ActionableEvent" instance=ExtResource("1_actionable_event")]
